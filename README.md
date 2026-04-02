@@ -4,7 +4,7 @@
 A comprehensive website dedicated to McFarland Park's visitor center. The platform serves as a digital information hub for visitors seeking information about local restaurants using an interactive map and image galleries.
 
 ## Target Users
-- **Visitors:** Visitors to the Shoals Area
+- **Visitors:** Visitors to the Shoals Area who want food place recommendations
 - **Faculty:** Visitors Center faculty who may add/edit info
 
 ## Features
@@ -23,6 +23,11 @@ A comprehensive website dedicated to McFarland Park's visitor center. The platfo
 - **Experimental/Learning Component:** TypeScript for type safety, or Vue/Svelte as alternative frameworks
 - **Email Capabilities:** Nodemailer or SendGrid for transactional emails and notifications
 - **Other Tools:** Maps API (Google Maps/Mapbox), Weather API, image optimization libraries
+
+## Members
+- Alex Nunley
+- Kaden Trousdale
+- Jackson Harvey
 
 ## Professor GCP Access
 ```
