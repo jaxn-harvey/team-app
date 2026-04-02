@@ -1,7 +1,7 @@
 # Project Proposal
 
 ## App Idea
-A comprehensive website dedicated to McFarland Park's visitor center. The platform serves as a digital information hub for visitors seeking information about local restaurants using an interactive map and image galleries.
+A website for McFarland Park's visitors center. The platform serves as a potential resource for visitors seeking information about local restaurants using an interactive map and image galleries.
 
 ## Target Users
 - **Visitors:** Visitors to the Shoals Area who want food place recommendations
