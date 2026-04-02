@@ -1,9 +1,3 @@
-# team-app
-Projects in Information Systems final team project, work in progress
-
-# External IP
-104.197.121.101
-
 # Project Proposal
 
 ## App Idea
@@ -30,4 +24,6 @@ A comprehensive website dedicated to McFarland Park's visitor center. The platfo
 - **Email Capabilities:** Nodemailer or SendGrid for transactional emails and notifications
 - **Other Tools:** Maps API (Google Maps/Mapbox), Weather API, image optimization libraries
 
+## External IP
+104.197.121.101
 ---
