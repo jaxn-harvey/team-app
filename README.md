@@ -24,6 +24,9 @@ A comprehensive website dedicated to McFarland Park's visitor center. The platfo
 - **Email Capabilities:** Nodemailer or SendGrid for transactional emails and notifications
 - **Other Tools:** Maps API (Google Maps/Mapbox), Weather API, image optimization libraries
 
-## Professor GCP Access: ```ssh -i student-key bcumbie@104.197.121.101```
+## Professor GCP Access
+```
+ssh -i student-key bcumbie@104.197.121.101
+```
 
 ---
