@@ -25,13 +25,16 @@ A website for McFarland Park's visitors center. The platform serves as a potenti
 - **Other Tools:** Maps API (Google Maps/Mapbox), Weather API, image optimization libraries
 
 ## Members
-- Alex Nunley
-- Kaden Trousdale
-- Jackson Harvey
+- [Alex Nunley](https://github.com/a-nunley)
+- [Kaden Trousdale](https://github.com/Kaden-Trousdale)
+- [Jackson Harvey](https://github.com/jaxn-harvey)
 
 ## Professor GCP Access
 ```
 ssh -i student-key bcumbie@104.197.121.101
 ```
-
+## Site address
+```
+https://shoalsdiningguide.barrycumbie.com
+```
 ---
