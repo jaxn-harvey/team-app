@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Restaurants - Florence Dining</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container-fluid">
+      <div class="header-content">
+        <div class="logo">
+          <h1>🍽️ Florence Dining</h1>
+        </div>
+        <nav class="navbar">
+          <button class="hamburger" id="hamburgerMenu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <ul class="nav-menu" id="navMenu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#restaurants">Restaurants</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <img src="https://images.unsplash.com/photo-1504674900967-da76157f002f?w=1200&h=400&fit=crop" alt="Restaurant dining">
+    <div class="hero-overlay">
+      <h2>All Restaurants</h2>
+      <p>Browse our complete selection of dining establishments</p>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      <section class="restaurants-list-section">
+        <h2>Explore Our Restaurants</h2>
+        <div class="filters">
+          <input type="text" id="searchInput" placeholder="Search restaurants..." class="search-box">
+          <select id="cuisineFilter" class="filter-select">
+            <option value="">All Cuisines</option>
+            <option value="Italian">Italian</option>
+            <option value="Tuscan">Tuscan</option>
+            <option value="Mediterranean">Mediterranean</option>
+            <option value="Modern">Modern</option>
+          </select>
+        </div>
+        <div class="restaurants-list" id="restaurantsList">
+          <!-- Restaurant items will be populated by JavaScript -->
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>About</h4>
+          <p>Discover the best dining experiences in Florence</p>
+        </div>
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#restaurants">Restaurants</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Contact</h4>
+          <p>Email: info@florencedining.com</p>
+          <p>Phone: +39 55 1234 5678</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Florence Dining. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+
+</html>

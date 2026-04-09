@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Florence Dining - Discover Local Restaurants</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container-fluid">
+      <div class="header-content">
+        <div class="logo">
+          <h1>🍽️ Florence Dining</h1>
+        </div>
+        <nav class="navbar">
+          <button class="hamburger" id="hamburgerMenu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <ul class="nav-menu" id="navMenu">
+            <li><a href="#home">Home</a></li>
+            <li><a href="restaurants.html">Restaurants</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <img src="https://images.unsplash.com/photo-1502581827181-8739a5e1b3a1?w=1200&h=400&fit=crop" alt="Florence cityscape">
+    <div class="hero-overlay">
+      <h2>Discover Florence's Culinary Treasures</h2>
+      <p>Explore authentic local restaurants and hidden gems</p>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      <!-- Map Section -->
+      <section class="map-section">
+        <h2>Find Restaurants Near You</h2>
+        <div id="map"></div>
+      </section>
+
+      <!-- Featured Restaurants -->
+      <section class="featured-section">
+        <h2>Featured Restaurants</h2>
+        <div class="restaurants-grid" id="restaurantsGrid">
+          <!-- Restaurant cards will be populated by JavaScript -->
+        </div>
+        <div class="view-all">
+          <a href="restaurants.html" class="btn-primary">View All Restaurants</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>About</h4>
+          <p>Discover the best dining experiences in Florence</p>
+        </div>
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="restaurants.html">Restaurants</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Contact</h4>
+          <p>Email: info@florencedining.com</p>
+          <p>Phone: +39 55 1234 5678</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Florence Dining. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
