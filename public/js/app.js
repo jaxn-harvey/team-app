@@ -153,7 +153,7 @@ function initializeMap() {
         <p><strong>Cuisine:</strong> ${restaurant.cuisine}</p>
         <p><strong>Rating:</strong> ⭐ ${restaurant.rating}</p>
         ${restaurant.liveMusic ? `<p><strong style="color: #ff006e;">🎵 Live Music</strong></p>` : ''}
-        <a href="#" onclick="scrollToRestaurant(${restaurant.id}); return false;" class="popup-link">View Details</a>
+        <a href="restaurants.html#restaurant-${restaurant.id}" class="popup-link">View Details</a>
       </div>
     `;
     
@@ -194,7 +194,7 @@ function displayRestaurantsList() {
   if (!listContainer) return;
 
   listContainer.innerHTML = restaurants.map(restaurant => `
-    <div class="restaurant-item" data-cuisine="${restaurant.cuisine}" data-name="${restaurant.name.toLowerCase()}">
+    <div id="restaurant-${restaurant.id}" class="restaurant-item" data-cuisine="${restaurant.cuisine}" data-name="${restaurant.name.toLowerCase()}" data-id="${restaurant.id}">
       <img src="${restaurant.image}" alt="${restaurant.name}" class="restaurant-item-image">
       <div class="restaurant-item-content">
         <div class="restaurant-item-header">
@@ -229,6 +229,17 @@ function displayRestaurantsList() {
       </div>
     </div>
   `).join('');
+
+  // Scroll to restaurant if anchor is present in URL
+  setTimeout(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      const element = document.querySelector(hash);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }, 300);
 }
 
 // ==================== HAMBURGER MENU ====================
