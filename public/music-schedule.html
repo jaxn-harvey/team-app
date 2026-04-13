@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Restaurants - Muscle Shoals Music Heritage</title>
+  <title>Live Music Schedule - Muscle Shoals</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/styles.css">
@@ -16,7 +16,7 @@
     <div class="container-fluid">
       <div class="header-content">
         <div class="logo">
-          <h1>🎸 Muscle Shoals</h1>
+          <h1>� Muscle Shoals</h1>
           <p class="tagline">Where Great Music Happens</p>
         </div>
         <nav class="navbar">
@@ -27,8 +27,8 @@
           </button>
           <ul class="nav-menu" id="navMenu">
             <li><a href="index.html">Home</a></li>
-            <li><a href="#restaurants">Restaurants</a></li>
-            <li><a href="music-schedule.html">Live Music</a></li>
+            <li><a href="restaurants.html">Restaurants</a></li>
+            <li><a href="#music">Live Music</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
         </nav>
@@ -38,35 +38,33 @@
 
   <!-- Hero Section -->
   <section class="hero">
-    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1200&h=400&fit=crop" alt="Restaurant and music venue">
-    <div clasMuscle Shoals Venues & Music Heritage</h2>
-      <p>Experience the birthplace of soul music with dining and live performances
-      <p>Experience Florence's finest dining and live music</p>
+    <img src="https://images.unsplash.com/photo-1516618143899-92e8daf85ff8?w=1200&h=400&fit=crop" alt="Live music stage">
+    <div class="hero-overlay">
+      <h2>🎸 Muscle Shoals Live Music This Week</h2>
+      <p>Discover live performances throughout Florence</p>
     </div>
   </section>
 
   <!-- Main Content -->
   <main class="main-content">
     <div class="container">
-      <section class="restaurants-list-section">
-        <h2>🎵 All Restaurants & Music Venues</h2>
-        <p style="color: #cccccc; text-align: center; margin-bottom: 30px;">Explore Florence's best dining establishments with live music</p>
-        <div class="filters">
-          <input type="text" id="searchInput" placeholder="Search restaurants..." class="search-box">
-          <select id="cuisineFilter" class="filter-select">
-            <option value="">All Cuisines</option>
-            <option value="American">American</option>
-            <option value="Casual American">Casual American</option>
-            <option value="Soul Food">Soul Food</option>
-            <option value="Barbecue & Casual">Barbecue</option>
-            <option value="Pizza & Italian">Pizza & Italian</option>
-            <option value="Tapas & Small Plates">Tapas & Small Plates</option>
-            <option value="American Fine Dining">Fine Dining</option>
-          </select>
+      <section class="music-schedule-section">
+        <h2>This Week's Performances</h2>
+        <p class="schedule-subtitle">Discover where music magic happens - on stages that echo with Muscle Shoals heritage alongside today's hottest live acts</p>
+
+        <!-- Days of the Week -->
+        <div class="schedule-week" id="scheduleWeek">
+          <!-- Schedule items will be populated by JavaScript -->
         </div>
-        <div class="restaurants-list" id="restaurantsList">
-          <!-- Restaurant items will be populated by JavaScript -->
-        </div>
+
+        <!-- All Venues with Live Music -->
+        <section class="venues-with-music">
+          <h3>Muscle Shoals Venues with Regular Live Music</h3>
+          <p class="venues-subtitle">Experience where the legendary Swampers and FAME Studios shaped American music history</p>
+          <div class="music-venues-grid" id="musicVenuesGrid">
+            <!-- Venues will be populated by JavaScript -->
+          </div>
+        </section>
       </section>
     </div>
   </main>
@@ -76,15 +74,15 @@
     <div class="container">
       <div class="footer-content">
         <div class="footer-section">
-          <h4>About Muscle Shoals</h4>
-          <p>Home to FAME Studios, legendary session musicians, and the soulful sounds that shaped American music history.</p>
+          <h4>Muscle Shoals Legacy</h4>
+          <p>The birthplace of soul music. FAME Studios and legendary Swampers session musicians created timeless masterpieces here.</p>
         </div>
         <div class="footer-section">
           <h4>Quick Links</h4>
           <ul>
             <li><a href="index.html">Home</a></li>
-            <li><a href="#restaurants">Restaurants</a></li>
-            <li><a href="music-schedule.html">Live Music Schedule</a></li>
+            <li><a href="restaurants.html">Restaurants</a></li>
+            <li><a href="#music">Live Music Schedule</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
         </div>
@@ -101,6 +99,7 @@
   </footer>
 
   <script src="js/app.js"></script>
+  <script src="js/music-schedule.js"></script>
 </body>
 
 </html>
