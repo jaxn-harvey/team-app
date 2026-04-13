@@ -143,7 +143,7 @@ function initializeMap() {
   restaurants.forEach((restaurant) => {
     const coordinates = [restaurant.lat, restaurant.lng];
     
-    const musicIcon = restaurant.liveMusic ? '🎸' : '🍴';
+    const musicIcon = restaurant.liveMusic ? 'Live' : 'Dining';
     
     const marker = L.marker(coordinates).addTo(map);
     
@@ -151,8 +151,8 @@ function initializeMap() {
       <div class="map-popup">
         <h4>${musicIcon} ${restaurant.name}</h4>
         <p><strong>Cuisine:</strong> ${restaurant.cuisine}</p>
-        <p><strong>Rating:</strong> ⭐ ${restaurant.rating}</p>
-        ${restaurant.liveMusic ? `<p><strong style="color: #ff006e;">🎵 Live Music</strong></p>` : ''}
+        <p><strong>Rating:</strong> ${restaurant.rating}</p>
+        ${restaurant.liveMusic ? `<p><strong style="color: #0984e3;">Live Music</strong></p>` : ''}
         <a href="restaurants.html#restaurant-${restaurant.id}" class="popup-link">View Details</a>
       </div>
     `;
@@ -177,12 +177,12 @@ function displayFeaturedRestaurants() {
       <div class="restaurant-info">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
           <h3>${restaurant.name}</h3>
-          ${restaurant.featured ? '<span style="font-size: 18px;">⭐</span>' : ''}
+          ${restaurant.featured ? '<span style="font-size: 18px; margin-left: 8px;">Featured</span>' : ''}
         </div>
         <div class="restaurant-cuisine">${restaurant.cuisine}</div>
-        ${restaurant.liveMusic ? '<div style="color: var(--highlight-color); font-weight: 600; font-size: 13px; margin-bottom: 8px;">🎸 Live Music Venue</div>' : ''}
+        ${restaurant.liveMusic ? '<div style="color: var(--highlight-color); font-weight: 600; font-size: 13px; margin-bottom: 8px;">Live Music Venue</div>' : ''}
         <p class="restaurant-description">${restaurant.description.substring(0, 80)}...</p>
-        <div class="restaurant-rating">⭐ ${restaurant.rating} (${restaurant.reviews} reviews)</div>
+        <div class="restaurant-rating">${restaurant.rating} (${restaurant.reviews} reviews)</div>
       </div>
     </div>
   `).join('');
@@ -198,31 +198,31 @@ function displayRestaurantsList() {
       <img src="${restaurant.image}" alt="${restaurant.name}" class="restaurant-item-image">
       <div class="restaurant-item-content">
         <div class="restaurant-item-header">
-          <h3>${restaurant.name}${restaurant.featured ? ' ⭐ Featured' : ''}</h3>
+          <h3>${restaurant.name}${restaurant.featured ? ' - Featured' : ''}</h3>
           <span class="restaurant-cuisine-tag">${restaurant.cuisine}</span>
-          ${restaurant.liveMusic ? '<span class="live-music-badge">🎸 Live Music</span>' : ''}
+          ${restaurant.liveMusic ? '<span class="live-music-badge">Live Music</span>' : ''}
         </div>
-        ${restaurant.heritage ? `<div class="heritage-label">🎵 ${restaurant.heritage}</div>` : ''}
+        ${restaurant.heritage ? `<div class="heritage-label">${restaurant.heritage}</div>` : ''}
         <div class="restaurant-details">
           <div class="detail-row">
-            <span class="detail-label">📍 Address:</span>
+            <span class="detail-label">Address:</span>
             <span>${restaurant.address}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">📞 Phone:</span>
+            <span class="detail-label">Phone:</span>
             <span>${restaurant.phone}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">⏰ Hours:</span>
+            <span class="detail-label">Hours:</span>
             <span>${restaurant.hours}</span>
           </div>
           ${restaurant.liveMusic ? `<div class="detail-row">
-            <span class="detail-label">🎵 Music:</span>
+            <span class="detail-label">Music:</span>
             <span>${restaurant.musicSchedule}</span>
           </div>` : ''}
         </div>
         <p class="restaurant-description">${restaurant.description}</p>
-        <div class="restaurant-rating">⭐ ${restaurant.rating} (${restaurant.reviews} reviews)</div>
+        <div class="restaurant-rating">${restaurant.rating} (${restaurant.reviews} reviews)</div>
         <button class="btn-learn-more" onclick="alert('Contact ${restaurant.name}:\\n${restaurant.phone}\\n\\nHours: ${restaurant.hours}')">
           Get Contact Info
         </button>
