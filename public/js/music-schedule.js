@@ -7,22 +7,22 @@ const musicSchedule = [
       {
         time: "7:00 PM - 10:00 PM",
         venue: "Swampers",
-        artist: "Muscle Shoals Soul Collective",
-        genre: "Soul/Blues",
+        artist: "Florence Jazz Collective",
+        genre: "Jazz/Soul",
         image: "https://images.unsplash.com/photo-1511379938547-c1f69b13d835?w=300&h=200&fit=crop"
       },
       {
         time: "8:00 PM - 11:00 PM",
         venue: "Rattlesnake Saloon",
-        artist: "Tennessee River Band",
+        artist: "Tennessee Valley Band",
         genre: "Southern Rock",
         image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&h=200&fit=crop"
       },
       {
         time: "9:00 PM - Midnight",
         venue: "FloBama",
-        artist: "FAME Tribute - Spirit of the Sessions",
-        genre: "Soul/Rock",
+        artist: "Florence Music Experience",
+        genre: "Blues/Rock",
         image: "https://images.unsplash.com/photo-1516618143899-92e8daf85ff8?w=300&h=200&fit=crop"
       }
     ]
@@ -34,29 +34,29 @@ const musicSchedule = [
       {
         time: "6:00 PM - 9:00 PM",
         venue: "Lava Room",
-        artist: "Aretha's Legacy - Jazz & Soul",
-        genre: "Soul/Jazz",
+        artist: "Florence Jazz Nights",
+        genre: "Jazz",
         image: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=300&h=200&fit=crop"
       },
       {
         time: "7:30 PM - 10:30 PM",
         venue: "Swampers",
-        artist: "Muscle Shoals Legends Night",
+        artist: "Local Soul Performers",
         genre: "Soul/Blues",
         image: "https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=300&h=200&fit=crop"
       },
       {
         time: "8:00 PM - Late",
         venue: "FloBama",
-        artist: "Wilson's Groove - Modern Soul",
-        genre: "Soul/Funk",
+        artist: "Florence Live Band",
+        genre: "Rock",
         image: "https://images.unsplash.com/photo-1519812141007-0c46e93b9854?w=300&h=200&fit=crop"
       },
       {
         time: "9:00 PM - Midnight",
         venue: "Rising Crust",
-        artist: "Local Legends Showcase",
-        genre: "Mixed Genres",
+        artist: "Local Musician Showcase",
+        genre: "Mixed",
         image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&h=200&fit=crop"
       }
     ]
@@ -68,29 +68,29 @@ const musicSchedule = [
       {
         time: "7:00 PM - 10:00 PM",
         venue: "Swampers",
-        artist: "Tennessee River Sessions",
+        artist: "Tennessee Valley Sessions",
         genre: "Americana",
         image: "https://images.unsplash.com/photo-1516618143899-92e8daf85ff8?w=300&h=200&fit=crop"
       },
       {
         time: "8:00 PM - Midnight",
         venue: "Rattlesnake Saloon",
-        artist: "Shoals Country Stories",
+        artist: "Florence Country Night",
         genre: "Country",
         image: "https://images.unsplash.com/photo-1513002749550-c892ee7e4b91?w=300&h=200&fit=crop"
       },
       {
         time: "8:30 PM - 11:30 PM",
         venue: "Lava Room",
-        artist: "Jazz on the River",
+        artist: "Jazz on Court Street",
         genre: "Jazz",
         image: "https://images.unsplash.com/photo-1511379938547-c1f69b13d835?w=300&h=200&fit=crop"
       },
       {
         time: "9:00 PM - Late",
         venue: "FloBama",
-        artist: "The Session Musicians",
-        genre: "Soul/Rock",
+        artist: "Florence Live Sessions",
+        genre: "Blues/Rock",
         image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&h=200&fit=crop"
       }
     ]
@@ -102,15 +102,15 @@ const musicSchedule = [
       {
         time: "6:00 PM - 9:00 PM",
         venue: "Swampers",
-        artist: "Soul Sunset Sessions",
-        genre: "Soul/Blues",
+        artist: "Sunday Jazz Sessions",
+        genre: "Jazz/Blues",
         image: "https://images.unsplash.com/photo-1511379938547-c1f69b13d835?w=300&h=200&fit=crop"
       },
       {
         time: "7:00 PM - 10:00 PM",
         venue: "Rattlesnake Saloon",
-        artist: "Muscle Shoals Songwriters Circle",
-        genre: "Americana/Folk",
+        artist: "Florence Songwriters",
+        genre: "Americana",
         image: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=300&h=200&fit=crop"
       }
     ]

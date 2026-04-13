@@ -4,9 +4,9 @@ const restaurants = [
     id: 1,
     name: "Swampers",
     cuisine: "American",
-    description: "Where the legendary Swampers session musicians gathered. Premier dining at Renaissance Shoals Hotel with premium cuisine and performances. The heart of Muscle Shoals music tradition.",
+    description: "Premier dining at Renaissance Shoals Hotel featuring upscale American cuisine and live entertainment. An elegant experience with world-class performances overlooking the Tennessee River.",
     image: "https://images.unsplash.com/photo-1517457373614-b7152f800bb1?w=400&h=300&fit=crop",
-    address: "One Riverfront Plaza, Florence, AL 35630",
+    address: "One Riverfront Plaza, Florence, AL 35645",
     phone: "(256) 246-7000",
     hours: "5:00 PM - 11:00 PM",
     rating: 4.9,
@@ -14,37 +14,43 @@ const restaurants = [
     liveMusic: true,
     musicSchedule: "Nightly performances",
     featured: true,
-    heritage: "Home to the legendary Swampers session musicians"
+    heritage: "Premier waterfront dining venue",
+    lat: 34.1856,
+    lng: -87.6812
   },
   {
     id: 2,
     name: "FloBama",
     cuisine: "Casual American",
-    description: "Vibrant music venue where local and touring artists keep the Muscle Shoals tradition alive. Great food, cold drinks, and non-stop musical energy. A modern gathering place for music lovers.",
+    description: "Vibrant bar and restaurant with a stellar reputation for live music and entertainment. Great food, cold drinks, and non-stop musical energy. A modern gathering place for music lovers.",
     image: "https://images.unsplash.com/photo-1504674900967-da76157f002f?w=400&h=300&fit=crop",
-    address: "9 Court Street, Florence, AL 35630",
+    address: "9 Court Street, Florence, AL 35645",
     phone: "(256) 766-2635",
     hours: "11:00 AM - Late Night",
     rating: 4.7,
     reviews: 418,
     liveMusic: true,
     musicSchedule: "Thursday-Sunday",
-    heritage: "Contemporary hub for Muscle Shoals live music"
+    heritage: "Popular live music destination",
+    lat: 34.1899,
+    lng: -87.6745
   },
   {
     id: 3,
     name: "Lava Room",
     cuisine: "Tapas & Small Plates",
-    description: "Contemporary lounge featuring upscale small plates and craft cocktails overlooking the Tennessee River. Intimate atmosphere with live acoustic performances celebrating Muscle Shoals' artistic spirit.",
+    description: "Contemporary lounge featuring upscale small plates and craft cocktails. Intimate atmosphere with live acoustic performances in a sophisticated setting.",
     image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
-    address: "116 Court Street, Florence, AL 35630",
+    address: "116 Court Street, Florence, AL 35645",
     phone: "(256) 248-5282",
     hours: "4:00 PM - 11:00 PM",
     rating: 4.6,
     reviews: 207,
     liveMusic: true,
     musicSchedule: "Weekend nights",
-    heritage: "Artistic venue with Tennessee River views"
+    heritage: "Upscale lounge with live entertainment",
+    lat: 34.1915,
+    lng: -87.6728
   },
   {
     id: 4,
@@ -52,59 +58,67 @@ const restaurants = [
     cuisine: "Pizza & Italian",
     description: "Artisan pizzeria with wood-fired oven and authentic Italian recipes. Casual and welcoming atmosphere where musicians and music fans connect over great food and live performances.",
     image: "https://images.unsplash.com/photo-1555939594-58d7cb561fcb?w=400&h=300&fit=crop",
-    address: "200 Court Street, Florence, AL 35630",
+    address: "200 Court Street, Florence, AL 35645",
     phone: "(256) 765-5432",
     hours: "11:00 AM - 10:00 PM",
     rating: 4.5,
     reviews: 301,
     liveMusic: true,
     musicSchedule: "Friday & Saturday",
-    heritage: "Community-focused music venue"
+    heritage: "Community pizzeria with live music",
+    lat: 34.1928,
+    lng: -87.6761
   },
   {
     id: 5,
     name: "Champy's Soul Food",
     cuisine: "Soul Food",
-    description: "Authentic Southern soul food restaurant celebrating the culinary roots of Muscle Shoals. Traditional comfort classics prepared with passion and warm hospitality. Occasional live music honoring local artists.",
+    description: "Authentic Southern soul food restaurant featuring traditional comfort classics prepared with passion and warm hospitality. Occasional live music and community-focused gatherings.",
     image: "https://images.unsplash.com/photo-1567521464027-f127ff144326?w=400&h=300&fit=crop",
-    address: "602 Court Street, Florence, AL 35630",
+    address: "602 Court Street, Florence, AL 35645",
     phone: "(256) 764-2898",
     hours: "10:30 AM - 9:00 PM",
     rating: 4.4,
     reviews: 189,
     liveMusic: false,
     musicSchedule: "Live Music Events Monthly",
-    heritage: "Soul food roots tied to Muscle Shoals culture"
+    heritage: "Traditional soul food establishment",
+    lat: 34.1872,
+    lng: -87.6685
   },
   {
     id: 6,
     name: "Rattlesnake Saloon",
     cuisine: "Barbecue & Casual",
-    description: "Historic live music venue in a rustic building with authentic charm. BBQ and casual fare alongside some of the best live performances in the Muscle Shoals region. A true temple of local music.",
+    description: "Historic live music venue in a rustic building with authentic charm. BBQ and casual fare alongside some of the best live performances in the Florence area. A true temple of local entertainment.",
     image: "https://images.unsplash.com/photo-1502641192624-92c51f59c46d?w=400&h=300&fit=crop",
-    address: "1012 Woods Cove Road, Florence, AL 35634",
+    address: "1012 Woods Cove Road, Florence, AL 35645",
     phone: "(256) 759-9800",
     hours: "11:00 AM - Midnight",
     rating: 4.7,
     reviews: 412,
     liveMusic: true,
     musicSchedule: "Thursday-Sunday",
-    heritage: "Legendary live music venue"
+    heritage: "Iconic live venue",
+    lat: 34.1741,
+    lng: -87.6650
   },
   {
     id: 7,
     name: "Renaissance Shoals Restaurant",
     cuisine: "American Fine Dining",
-    description: "Elegant fine dining at Renaissance Shoals Hotel with views of the Tennessee River. Premium cuisine and upscale entertainment reflecting Muscle Shoals' cultural sophistication.",
+    description: "Elegant fine dining at Renaissance Shoals Hotel with views of the Tennessee River. Premium cuisine and upscale entertainment in a sophisticated setting.",
     image: "https://images.unsplash.com/photo-1479623433602-84df5ce71d06?w=400&h=300&fit=crop",
-    address: "One Riverfront Plaza, Florence, AL 35630",
+    address: "One Riverfront Plaza, Florence, AL 35645",
     phone: "(256) 246-7000",
     hours: "6:00 PM - 10:00 PM",
     rating: 4.8,
     reviews: 267,
     liveMusic: true,
     musicSchedule: "Select evening events",
-    heritage: "Prestige dining on the Tennessee River"
+    heritage: "Fine dining on the Tennessee River",
+    lat: 34.1856,
+    lng: -87.6812
   }
 ];
 
@@ -117,7 +131,7 @@ function initializeMap() {
   const florenceCenter = [34.1899, -87.6759];
 
   // Initialize map
-  const map = L.map('map').setView(florenceCenter, 13);
+  const map = L.map('map').setView(florenceCenter, 14);
 
   // Add tile layer
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -125,9 +139,9 @@ function initializeMap() {
     maxZoom: 19
   }).addTo(map);
 
-  // Add restaurant markers
+  // Add restaurant markers with actual coordinates
   restaurants.forEach((restaurant) => {
-    const coordinates = getRandomCoordinates(florenceCenter);
+    const coordinates = [restaurant.lat, restaurant.lng];
     
     const musicIcon = restaurant.liveMusic ? '🎸' : '🍴';
     
@@ -265,14 +279,6 @@ function setupFilters() {
 }
 
 // ==================== HELPER FUNCTIONS ====================
-function getRandomCoordinates(center) {
-  // Generate random coordinates within ~15km of Florence center
-  const offset = 0.15;
-  const lat = center[0] + (Math.random() - 0.5) * offset;
-  const lng = center[1] + (Math.random() - 0.5) * offset;
-  return [lat, lng];
-}
-
 function goToRestaurantDetail(restaurantId) {
   window.location.href = `restaurants.html#restaurant-${restaurantId}`;
 }
