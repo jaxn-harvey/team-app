@@ -33,4 +33,6 @@ A website for McFarland Park's visitors center. The platform serves as a potenti
 ```
 ssh -i student-key bcumbie@104.197.121.101
 ```
-## [Shoals Dining Guide](https://shoalsdiningguide.barrycumbie.com/)
+## [Shoals Dining Guide](https://shoalsdiningguide.barrycumbie.com)
+
+---
