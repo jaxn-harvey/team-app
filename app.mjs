@@ -34,7 +34,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.get('/', (req, res) => {
-  res.sendFile(join(__dirname, 'public', 'exam.html'));
+  res.sendFile(join(__dirname, 'public', 'index.html'));
 })
 
 app.post('/api/get-name', async (req, res) => {

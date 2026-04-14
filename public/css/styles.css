@@ -1,0 +1,976 @@
+/* ==================== VARIABLES ==================== */
+:root {
+  --primary-color: #6c5ce7;
+  --secondary-color: #a29bfe;
+  --accent-color: #0984e3;
+  --highlight-color: #e84393;
+  --text-dark: #2d3436;
+  --text-light: #636e72;
+  --bg-light: #ffffff;
+  --bg-white: #fafafa;
+  --border-color: #e1e8ed;
+  --success-color: #0984e3;
+  --error-color: #e84393;
+}
+
+/* ==================== GENERAL STYLES ==================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-dark);
+  background-color: var(--bg-light);
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.container-fluid {
+  width: 100%;
+}
+
+/* ==================== HEADER & NAVIGATION ==================== */
+.header {
+  background-color: var(--bg-white);
+  box-shadow: 0 2px 8px rgba(108, 92, 231, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo h1 {
+  color: var(--primary-color);
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.tagline {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent-color);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 4px 0 0 0;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+}
+
+.nav-menu {
+  display: flex;
+  list-style: none;
+  gap: 30px;
+}
+
+.nav-menu a {
+  text-decoration: none;
+  color: var(--text-dark);
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-menu a:hover {
+  color: var(--primary-color);
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  background: none;
+  border: none;
+  cursor: pointer;
+  gap: 6px;
+}
+
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background-color: var(--text-dark);
+  transition: 0.3s;
+}
+
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(10px, 10px);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* ==================== HERO SECTION ==================== */
+.hero {
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+}
+
+.hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+}
+
+.hero-overlay h2 {
+  font-size: 48px;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.hero-overlay p {
+  font-size: 20px;
+  font-weight: 300;
+}
+
+/* ==================== MAIN CONTENT ==================== */
+.main-content {
+  padding: 60px 0;
+  background-color: var(--bg-light);
+}
+
+/* Map Section */
+.map-section {
+  margin-bottom: 60px;
+}
+
+.map-section h2 {
+  color: var(--primary-color);
+  font-size: 32px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+#map {
+  width: 100%;
+  height: 500px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(108, 92, 231, 0.15);
+  overflow: hidden;
+}
+
+.map-popup {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.map-popup h4 {
+  margin: 0 0 8px 0;
+  color: var(--primary-color);
+  font-size: 16px;
+}
+
+.map-popup p {
+  margin: 4px 0;
+  font-size: 13px;
+  color: var(--text-dark);
+}
+
+.popup-link {
+  display: inline-block;
+  background-color: var(--primary-color);
+  color: white;
+  padding: 6px 12px;
+  text-decoration: none;
+  border-radius: 4px;
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.popup-link:hover {
+  background-color: var(--accent-color);
+}
+
+/* Heritage Section */
+.heritage-section {
+  background: linear-gradient(135deg, rgba(108, 92, 231, 0.08) 0%, rgba(9, 132, 227, 0.08) 100%);
+  border: 2px solid var(--primary-color);
+  border-radius: 8px;
+  padding: 40px;
+  margin: 60px 0;
+  box-shadow: 0 2px 8px rgba(108, 92, 231, 0.1);
+}
+
+.heritage-content h3 {
+  color: var(--accent-color);
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.heritage-content p {
+  color: var(--text-light);
+  font-size: 16px;
+  line-height: 1.8;
+  margin-bottom: 30px;
+}
+
+.heritage-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.heritage-feature {
+  background-color: rgba(108, 92, 231, 0.05);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.heritage-feature:hover {
+  border-color: var(--accent-color);
+  box-shadow: 0 2px 8px rgba(9, 132, 227, 0.1);
+  transform: translateY(-5px);
+}
+
+.feature-icon {
+  font-size: 32px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.heritage-feature h4 {
+  color: var(--accent-color);
+  font-size: 18px;
+  margin: 10px 0;
+}
+
+.heritage-feature p {
+  color: var(--text-light);
+  font-size: 13px;
+  margin: 0;
+}
+
+/* Featured Section */
+.featured-section {
+  text-align: center;
+}
+
+.featured-section h2 {
+  color: var(--primary-color);
+  font-size: 32px;
+  margin-bottom: 40px;
+}
+
+.restaurants-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.restaurant-card {
+  background-color: var(--bg-white);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(108, 92, 231, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  border: 1px solid var(--border-color);
+}
+
+.restaurant-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 16px rgba(108, 92, 231, 0.15);
+}
+
+.restaurant-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+
+.restaurant-info {
+  padding: 20px;
+}
+
+.restaurant-info h3 {
+  color: var(--primary-color);
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.restaurant-cuisine {
+  color: var(--text-light);
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.restaurant-description {
+  color: var(--text-light);
+  font-size: 14px;
+  line-height: 1.4;
+  margin-bottom: 15px;
+}
+
+.restaurant-rating {
+  color: #f39c12;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.view-all {
+  margin-top: 20px;
+}
+
+.btn-primary {
+  display: inline-block;
+  background-color: var(--primary-color);
+  color: white;
+  padding: 12px 40px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--secondary-color);
+}
+
+/* ==================== RESTAURANTS LIST PAGE ==================== */
+.restaurants-list-section {
+  margin-bottom: 60px;
+}
+
+.restaurants-list-section h2 {
+  color: var(--primary-color);
+  font-size: 32px;
+  margin-bottom: 30px;
+}
+
+.filters {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.search-box,
+.filter-select {
+  padding: 12px 15px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 14px;
+  flex: 1;
+  min-width: 200px;
+  background-color: white;
+  color: var(--text-dark);
+}
+
+.search-box:focus,
+.filter-select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px rgba(108, 92, 231, 0.2);
+}
+
+.restaurants-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.restaurant-item {
+  display: flex;
+  background-color: var(--bg-white);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(108, 92, 231, 0.1);
+  transition: box-shadow 0.3s ease;
+  border: 1px solid var(--border-color);
+}
+
+.restaurant-item:hover {
+  box-shadow: 0 8px 16px rgba(108, 92, 231, 0.15);
+}
+
+.restaurant-item-image {
+  flex-shrink: 0;
+  width: 300px;
+  height: 250px;
+  object-fit: cover;
+}
+
+.restaurant-item-content {
+  flex: 1;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.restaurant-item-header {
+  margin-bottom: 15px;
+}
+
+.restaurant-item-header h3 {
+  color: var(--primary-color);
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.restaurant-cuisine-tag {
+  display: inline-block;
+  background-color: var(--accent-color);
+  color: #000000;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  margin-bottom: 10px;
+  width: fit-content;
+  font-weight: 600;
+}
+
+.live-music-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--highlight-color), var(--primary-color));
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  margin-left: 10px;
+  font-weight: 600;
+}
+
+.heritage-label {
+  background: rgba(9, 132, 227, 0.08);
+  color: var(--accent-color);
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin: 10px 0;
+  font-weight: 600;
+  border-left: 3px solid var(--accent-color);
+}
+
+.restaurant-details {
+  margin-bottom: 15px;
+}
+
+.detail-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+.detail-label {
+  font-weight: 600;
+  color: var(--accent-color);
+  min-width: 80px;
+}
+
+.restaurant-description {
+  color: var(--text-light);
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.restaurant-rating {
+  color: #f39c12;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.btn-learn-more {
+  align-self: flex-start;
+  background-color: var(--primary-color);
+  color: white;
+  padding: 10px 25px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-learn-more:hover {
+  background-color: var(--accent-color);
+}
+
+/* ==================== FOOTER ==================== */
+.footer {
+  background: #f8f9fa;
+  color: var(--text-dark);
+  padding: 40px 0 20px;
+  margin-top: 60px;
+  border-top: 2px solid var(--primary-color);
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.footer-section h4 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: var(--accent-color);
+}
+
+.footer-section p {
+  line-height: 1.8;
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section li {
+  margin-bottom: 8px;
+}
+
+.footer-section a {
+  color: var(--text-light);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-section a:hover {
+  color: var(--primary-color);
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--border-color);
+  padding-top: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+/* ==================== MUSIC SCHEDULE PAGE ==================== */
+.music-schedule-section {
+  margin-bottom: 60px;
+}
+
+.music-schedule-section h2 {
+  color: var(--accent-color);
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.schedule-subtitle {
+  color: var(--text-light);
+  font-size: 16px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.venues-subtitle {
+  color: var(--text-light);
+  font-size: 14px;
+  margin-bottom: 30px;
+  text-align: center;
+  font-style: italic;
+}
+
+.schedule-week {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-bottom: 60px;
+}
+
+.schedule-day {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 8px rgba(108, 92, 231, 0.1);
+}
+
+.day-header {
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  padding: 20px;
+  text-align: center;
+}
+
+.day-header h3 {
+  font-size: 24px;
+  margin: 0;
+  color: white;
+}
+
+.day-date {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  margin: 5px 0 0 0;
+}
+
+.events-list {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.event-card {
+  background-color: #f8f9fa;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.event-card:hover {
+  border-color: var(--highlight-color);
+  box-shadow: 0 2px 8px rgba(108, 92, 231, 0.1);
+  transform: translateX(5px);
+}
+
+.event-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.event-info {
+  padding: 15px;
+}
+
+.event-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.event-header h4 {
+  font-size: 16px;
+  color: var(--accent-color);
+  margin: 0;
+}
+
+.genre-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--highlight-color), var(--primary-color));
+  color: white;
+  padding: 3px 10px;
+  border-radius: 15px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.event-details {
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.event-details p {
+  margin: 4px 0;
+  color: var(--text-light);
+}
+
+.btn-get-tickets {
+  width: 100%;
+  background: linear-gradient(135deg, var(--highlight-color), var(--primary-color));
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 12px;
+}
+
+.btn-get-tickets:hover {
+  transform: scale(1.02);
+}
+
+/* Music Venues Grid */
+.venues-with-music {
+  margin-top: 60px;
+  padding-top: 40px;
+  border-top: 2px solid var(--primary-color);
+}
+
+.venues-with-music h3 {
+  color: var(--accent-color);
+  font-size: 28px;
+  margin-bottom: 30px;
+}
+
+.music-venues-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+.music-venue-card {
+  background: var(--bg-white);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 8px rgba(108, 92, 231, 0.1);
+  transition: all 0.3s ease;
+}
+
+.music-venue-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 16px rgba(108, 92, 231, 0.15);
+}
+
+.venue-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.venue-card-content {
+  padding: 20px;
+}
+
+.venue-card-content h4 {
+  font-size: 20px;
+  color: var(--primary-color);
+  margin: 0 0 8px 0;
+}
+
+.venue-type {
+  color: var(--highlight-color);
+  font-size: 13px;
+  margin: 5px 0;
+  font-weight: 600;
+}
+
+.venue-music-schedule {
+  color: var(--accent-color);
+  font-size: 12px;
+  margin: 8px 0;
+  font-weight: 600;
+}
+
+.venue-address {
+  color: var(--text-light);
+  font-size: 13px;
+  margin: 10px 0;
+}
+
+.venue-contact {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.btn-call,
+.btn-info {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.btn-call {
+  background: var(--highlight-color);
+  color: white;
+}
+
+.btn-call:hover {
+  background-color: #d61f7d;
+  transform: scale(1.05);
+}
+
+.btn-info {
+  background: var(--primary-color);
+  color: white;
+}
+
+.btn-info:hover {
+  background-color: var(--secondary-color);
+  transform: scale(1.05);
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-menu {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    left: 0;
+    flex-direction: column;
+    background-color: var(--bg-white);
+    width: 100%;
+    text-align: center;
+    gap: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .nav-menu.active {
+    max-height: 300px;
+  }
+
+  .nav-menu li {
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .hero-overlay h2 {
+    font-size: 32px;
+  }
+
+  .hero-overlay p {
+    font-size: 16px;
+  }
+
+  .restaurants-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .restaurant-item {
+    flex-direction: column;
+  }
+
+  .restaurant-item-image {
+    width: 100%;
+    height: 200px;
+  }
+
+  .restaurant-item-content {
+    padding: 20px;
+  }
+
+  .filters {
+    flex-direction: column;
+  }
+
+  .search-box,
+  .filter-select {
+    min-width: 100%;
+    flex: auto;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+  }
+
+  .schedule-week {
+    grid-template-columns: 1fr;
+  }
+
+  .music-venues-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .heritage-section {
+    padding: 20px;
+  }
+
+  .heritage-features {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-content {
+    padding: 10px 15px;
+  }
+
+  .logo h1 {
+    font-size: 18px;
+  }
+
+  .hero {
+    height: 250px;
+  }
+
+  .hero-overlay h2 {
+    font-size: 24px;
+  }
+
+  .hero-overlay p {
+    font-size: 14px;
+  }
+
+  .main-content {
+    padding: 30px 0;
+  }
+
+  .featured-section h2,
+  .map-section h2 {
+    font-size: 24px;
+  }
+
+  #map {
+    height: 350px;
+  }
+
+  .restaurant-card,
+  .restaurant-item {
+    margin-bottom: 20px;
+  }
+
+  .restaurant-item-content {
+    padding: 15px;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    gap: 5px;
+  }
+}
