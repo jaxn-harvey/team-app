@@ -98,6 +98,34 @@ body {
   color: var(--primary-color);
 }
 
+/* Language Selector */
+.language-selector {
+  margin-left: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.language-selector select {
+  padding: 8px 12px;
+  border: 2px solid var(--primary-color);
+  border-radius: 6px;
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.language-selector select:hover {
+  background-color: rgba(108, 92, 231, 0.05);
+}
+
+.language-selector select:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+}
+
 .hamburger {
   display: none;
   flex-direction: column;
@@ -868,6 +896,12 @@ body {
   .nav-menu li {
     padding: 15px 0;
     border-bottom: 1px solid var(--border-color);
+  }
+
+  .language-selector {
+    margin-left: 0;
+    margin-top: 10px;
+    justify-content: center;
   }
 
   .hero-overlay h2 {

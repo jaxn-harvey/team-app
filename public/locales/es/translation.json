@@ -1,0 +1,73 @@
+{
+  "header": {
+    "title": "Florence, AL",
+    "tagline": "Guía de Música en Vivo y Comida"
+  },
+  "navigation": {
+    "home": "Inicio",
+    "restaurants": "Restaurantes",
+    "contact": "Contacto",
+    "language": "Idioma"
+  },
+  "hero": {
+    "title": "La Vibrante Escena de Música en Vivo y Comida de Florence, Alabama",
+    "subtitle": "Descubre los lugares de música en vivo y gastronomía del corazón del Valle de Tennessee"
+  },
+  "map": {
+    "title": "Encuentra Lugares Cerca de Ti"
+  },
+  "heritage": {
+    "title": "Centro de Música y Entretenimiento de Florence",
+    "description": "Florence, Alabama es el hogar de una próspera escena de música en vivo y restaurantes galardonados. Ubicada en la región histórica de Shoals cerca del río Tennessee, Florence ofrece una mezcla excepcional de hospitalidad sureña, entretenimiento de clase mundial y excelencia culinaria. Ya sea que estés disfrutando presentaciones en vivo en lugares locales o cenando en restaurantes celebrados, Florence te ofrece experiencias auténticas en el corazón del Valle de Tennessee.",
+    "features": {
+      "liveMusic": "Lugares de Música en Vivo",
+      "liveMusicDesc": "Lugares principales con presentaciones todas las noches",
+      "fineDining": "Comida Fina",
+      "fineDiningDesc": "Restaurantes galardonados y favoritos locales",
+      "river": "Río Tennessee",
+      "riverDesc": "Comida de temporada y entretenimiento frente al rio"
+    }
+  },
+  "featured": {
+    "title": "Lugares Destacados",
+    "viewAll": "Ver Todos los Restaurantes"
+  },
+  "footer": {
+    "about": "Acerca de Florence",
+    "aboutText": "Florence es el destino de música y entretenimiento de Alabama en la región de Shoals, ofreciendo comida fina y experiencias de música en vivo.",
+    "quickLinks": "Enlaces Rápidos",
+    "contact": "Contacto",
+    "email": "Correo Electrónico",
+    "phone": "Teléfono",
+    "copyright": "© 2026 Florence, Alabama - Música y Comida. Todos los derechos reservados."
+  },
+  "restaurants": {
+    "hero": {
+      "title": "Todos los Restaurantes y Lugares de Música",
+      "subtitle": "Experimenta la mejor comida de Florence con música en vivo"
+    },
+    "title": "Todos los Restaurantes y Lugares de Música",
+    "subtitle": "Explora los mejores lugares de comida de Florence con música en vivo",
+    "search": "Buscar restaurantes...",
+    "allCuisines": "Todos los Tipos de Comida",
+    "cuisines": {
+      "all": "Todos los Tipos de Comida",
+      "american": "Americana",
+      "casual": "Americana Casual",
+      "casualAmerican": "Americana Casual",
+      "soulFood": "Comida Soul",
+      "bbq": "Barbacoa",
+      "barbecue": "Barbacoa",
+      "pizza": "Pizza e Italiana",
+      "tapas": "Tapas y Platos Pequeños",
+      "fineDining": "Comida Fina"
+    },
+    "address": "Dirección",
+    "phone": "Teléfono",
+    "hours": "Horario",
+    "music": "Música",
+    "contact": "Obtener Información de Contacto",
+    "featured": "Destacado",
+    "liveMusic": "Música en Vivo"
+  }
+}

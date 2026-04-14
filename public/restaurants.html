@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next/23.7.6/i18next.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next-http-backend/2.4.2/i18nextHttpBackend.min.js"></script>
 </head>
 
 <body>
@@ -16,8 +18,8 @@
     <div class="container-fluid">
       <div class="header-content">
         <div class="logo">
-          <h1>Florence, AL</h1>
-          <p class="tagline">Live Music & Dining Guide</p>
+          <h1 data-i18n="header.title">Florence, AL</h1>
+          <p class="tagline" data-i18n="header.tagline">Live Music & Dining Guide</p>
         </div>
         <nav class="navbar">
           <button class="hamburger" id="hamburgerMenu">
@@ -26,9 +28,15 @@
             <span></span>
           </button>
           <ul class="nav-menu" id="navMenu">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="#restaurants">Restaurants</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="index.html" data-i18n="navigation.home">Home</a></li>
+            <li><a href="restaurants.html" data-i18n="navigation.restaurants">Restaurants</a></li>
+            <li><a href="index.html#contact" data-i18n="navigation.contact">Contact</a></li>
+            <li class="language-selector">
+              <select id="languageSelect" onchange="changeLanguage(this.value)">
+                <option value="en">English</option>
+                <option value="es">Español</option>
+              </select>
+            </li>
           </ul>
         </nav>
       </div>
@@ -38,9 +46,9 @@
   <!-- Hero Section -->
   <section class="hero">
     <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1200&h=400&fit=crop" alt="Restaurant and music venue">
-    <div clasMuscle Shoals Venues & Music Heritage</h2>
-      <p>Experience the birthplace of soul music with dining and live performances
-      <p>Experience Florence's finest dining and live music</p>
+    <div class="hero-overlay">
+      <h2 data-i18n="restaurants.hero.title">All Restaurants & Music Venues</h2>
+      <p data-i18n="restaurants.hero.subtitle">Experience Florence's finest dining and live music</p>
     </div>
   </section>
 
@@ -48,19 +56,19 @@
   <main class="main-content">
     <div class="container">
       <section class="restaurants-list-section">
-        <h2>All Restaurants & Music Venues</h2>
-        <p style="color: #cccccc; text-align: center; margin-bottom: 30px;">Explore Florence's best dining establishments with live music</p>
+        <h2 data-i18n="restaurants.title">All Restaurants & Music Venues</h2>
+        <p data-i18n="restaurants.subtitle" style="color: #666; text-align: center; margin-bottom: 30px;"></p>
         <div class="filters">
-          <input type="text" id="searchInput" placeholder="Search restaurants..." class="search-box">
+          <input type="text" id="searchInput" data-i18n-placeholder="restaurants.search" placeholder="Search restaurants..." class="search-box">
           <select id="cuisineFilter" class="filter-select">
-            <option value="">All Cuisines</option>
-            <option value="American">American</option>
-            <option value="Casual American">Casual American</option>
-            <option value="Soul Food">Soul Food</option>
-            <option value="Barbecue & Casual">Barbecue</option>
-            <option value="Pizza & Italian">Pizza & Italian</option>
-            <option value="Tapas & Small Plates">Tapas & Small Plates</option>
-            <option value="American Fine Dining">Fine Dining</option>
+            <option value="" data-i18n="restaurants.allCuisines">All Cuisines</option>
+            <option value="American" data-i18n="restaurants.cuisines.american">American</option>
+            <option value="Casual American" data-i18n="restaurants.cuisines.casual">Casual American</option>
+            <option value="Soul Food" data-i18n="restaurants.cuisines.soulFood">Soul Food</option>
+            <option value="Barbecue & Casual" data-i18n="restaurants.cuisines.bbq">Barbecue</option>
+            <option value="Pizza & Italian" data-i18n="restaurants.cuisines.pizza">Pizza & Italian</option>
+            <option value="Tapas & Small Plates" data-i18n="restaurants.cuisines.tapas">Tapas & Small Plates</option>
+            <option value="American Fine Dining" data-i18n="restaurants.cuisines.fineDining">Fine Dining</option>
           </select>
         </div>
         <div class="restaurants-list" id="restaurantsList">
@@ -75,29 +83,30 @@
     <div class="container">
       <div class="footer-content">
         <div class="footer-section">
-          <h4>About Florence</h4>
-          <p>Florence is Alabama's entertainment and dining destination, home to premier restaurants and live music venues.</p>
+          <h4 data-i18n="footer.about">About Florence</h4>
+          <p data-i18n="footer.aboutText">Florence is Alabama's entertainment and dining destination, home to premier restaurants and live music venues.</p>
         </div>
         <div class="footer-section">
-          <h4>Quick Links</h4>
+          <h4 data-i18n="footer.quickLinks">Quick Links</h4>
           <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="#restaurants">Restaurants</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="index.html" data-i18n="navigation.home">Home</a></li>
+            <li><a href="restaurants.html" data-i18n="navigation.restaurants">Restaurants</a></li>
+            <li><a href="index.html#contact" data-i18n="navigation.contact">Contact</a></li>
           </ul>
         </div>
         <div class="footer-section">
-          <h4>Contact</h4>
-          <p>Email: info@florencealmusic.com</p>
-          <p>Phone: (256) 760-6600</p>
+          <h4 data-i18n="footer.contact">Contact</h4>
+          <p><span data-i18n="footer.email">Email</span>: info@florencealmusic.com</p>
+          <p><span data-i18n="footer.phone">Phone</span>: (256) 760-6600</p>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2026 Florence, Alabama - Music & Dining. All rights reserved.</p>
+        <p data-i18n="footer.copyright">© 2026 Florence, Alabama - Music & Dining. All rights reserved.</p>
       </div>
     </div>
   </footer>
 
+  <script src="js/i18n.js"></script>
   <script src="js/app.js"></script>
 </body>
 
