@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<!--
+    🎓 EDUCATIONAL PURPOSE: Protected Route Demo
+    
+    This page demonstrates:
+    1. How to check authentication status on page load
+    2. How to redirect unauthenticated users automatically
+    3. How to display different content for authenticated vs unauthenticated users
+    4. What a "protected route" means in practice
+    
+    Key Learning Points:
+    - Protected routes check authentication before showing content
+    - Users without valid tokens get redirected or shown login prompts
+    - Authentication state determines what users can see and do
+    - Real apps often redirect automatically rather than showing error messages
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protected Route Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/protected-demo.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <!-- Navigation -->
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <a href="/" class="btn btn-secondary me-2">🏠 Home</a>
+                <a href="auth.html" class="btn btn-primary me-2">🔐 Authentication</a>
+                <a href="student-crud.html" class="btn btn-success">📝 Student CRUD</a>
+            </div>
+        </div>
+
+        <!-- Dynamic Content Based on Authentication -->
+        <div id="authContent">
+            <div class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Checking authentication...</span>
+                </div>
+                <p class="mt-2 text-muted">Checking your authentication status...</p>
+            </div>
+        </div>
+
+        <!-- Educational Content (Always Visible) -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="concept-box">
+                    <h4>🎓 What is a Protected Route?</h4>
+                    <p><strong>A protected route</strong> is a web page or API endpoint that requires authentication to access. It's like having a bouncer at the door of an exclusive club.</p>
+                    <ul>
+                        <li>Users must prove their identity (authenticate) before entering</li>
+                        <li>Without valid credentials, access is denied</li>
+                        <li>The page checks authentication status before showing sensitive content</li>
+                        <li>Common in apps for user dashboards, account settings, private data, etc.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Code Examples Section -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">📝 Basic Authentication Check</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>This is how you check if a user is authenticated on the frontend:</p>
+                        <div class="code-example">// Check if user has a valid JWT token
+function isAuthenticated() {
+    const token = localStorage.getItem('jwtToken');
+    
+    if (!token) {
+        return false; // No token found
+    }
+    
+    // Optionally: verify token isn't expired
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const currentTime = Math.floor(Date.now() / 1000);
+        return payload.exp > currentTime; // Check expiration
+    } catch (error) {
+        return false; // Invalid token format
+    }
+}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">🔄 Automatic Redirect Example</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Many apps automatically redirect unauthenticated users:</p>
+                        <div class="code-example">// Protect the entire page with automatic redirect
+window.addEventListener('load', function() {
+    const token = localStorage.getItem('jwtToken');
+    
+    if (!token) {
+        // Save the current page URL for after login
+        localStorage.setItem('redirectAfterLogin', window.location.href);
+        
+        // Redirect to login page
+        window.location.href = '/auth.html';
+        return;
+    }
+    
+    // User is authenticated, show protected content
+    showProtectedContent();
+});</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toggle Redirect Demo -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">🧪 Try Automatic Redirect (Demo)</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <p>Click the button below to see what happens when an unauthenticated user visits a protected page with automatic redirect enabled:</p>
+                        <button id="toggleRedirect" class="btn btn-primary" onclick="toggleRedirectDemo()">
+                            Enable Automatic Redirect Demo
+                        </button>
+                        <div id="redirectStatus" class="mt-3"></div>
+                        <small class="text-muted d-block mt-2">
+                            Note: This is just a demo. Real apps would redirect immediately on page load.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Real vs Simulated Authentication -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card border-success">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">🔍 Real Authentication vs This Demo</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="text-success">✅ This Demo Shows:</h6>
+                                <ul>
+                                    <li>Frontend token checking</li>
+                                    <li>Different content for auth states</li>
+                                    <li>Redirect patterns</li>
+                                    <li>User experience flows</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-warning">⚠️ Real Apps Also Have:</h6>
+                                <ul>
+                                    <li>Server-side route protection</li>
+                                    <li>API endpoint authentication</li>
+                                    <li>Token refresh mechanisms</li>
+                                    <li>Security headers and HTTPS</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <p class="mt-3 mb-0"><strong>Key Point:</strong> Frontend checks are for user experience. Backend protection is for security!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/protected-demo.js"></script>
+</body>
+</html>

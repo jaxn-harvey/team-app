@@ -1,3 +1,8 @@
+/*
+app.mjs and app.js appear to be load-bearing; we see app.js (the file we want) but when we delete .mjs or
+or try to rename the old one to .mjs, the app breaks. So we'll leave them be for now.
+*/
+
 // ==================== RESTAURANT DATA ====================
 const restaurants = [
   {

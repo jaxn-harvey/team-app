@@ -1,0 +1,13 @@
+/* Student CRUD page styles */
+
+/* Student ID clickable styling */
+.student-id {
+    cursor: pointer;
+    text-decoration: underline;
+    color: #007bff;
+}
+
+.student-id:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
