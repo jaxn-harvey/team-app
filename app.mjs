@@ -5,8 +5,17 @@ import bcrypt from 'bcrypt';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { MongoClient, ServerApiVersion, ObjectId } from 'mongodb';
+import nodemailer from 'nodemailer';
 
 const app = express();
+const server = createServer(app);
+const io = new SocketIOServer(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+  },
+});
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const PORT = process.env.PORT || 3000;
@@ -328,12 +337,97 @@ app.post('/api/setup/create-admin', async (req, res) => {
   }
 });
 
+// ==================== CONTACT / EMAIL ROUTES ====================
+
+app.post('/api/contact', async (req, res) => {
+  const { senderName, senderEmail, subject, message } = req.body;
+
+  try {
+    if (!senderName || !senderEmail || !subject || !message) {
+      return res.status(400).json({ error: 'All fields required' });
+    }
+
+    try {
+      await contactCollection().insertOne({
+        name: senderName,
+        email: senderEmail,
+        subject: subject,
+        message: message,
+        timestamp: new Date(),
+        status: 'received',
+      });
+    } catch (dbError) {
+      console.warn('Database error (continuing anyway):', dbError.message);
+    }
+
+    const mailOptions = {
+      from: process.env.SMTP_FROM,
+      to: process.env.SMTP_USER,
+      subject: `New Contact: ${subject}`,
+      text: `From: ${senderName} (${senderEmail})\n\n${message}`,
+    };
+
+    await transporter.sendMail(mailOptions);
+    res.json({ status: 'success', message: 'Email sent successfully!' });
+  } catch (error) {
+    console.error('Contact endpoint error:', error);
+    res.status(500).json({ error: 'Failed to send email' });
+  }
+});
+
+// ==================== WEBSOCKET & EMAIL HANDLING ====================
+
+io.on('connection', (socket) => {
+  console.log('Client connected:', socket.id);
+
+  socket.on('send-contact-email', async (data) => {
+    const { senderName, senderEmail, subject, message } = data;
+
+    try {
+      if (!senderName || !senderEmail || !subject || !message) {
+        socket.emit('email-status', { status: 'error', message: 'All fields required' });
+        return;
+      }
+
+      try {
+        await contactCollection().insertOne({
+          name: senderName,
+          email: senderEmail,
+          subject: subject,
+          message: message,
+          timestamp: new Date(),
+          status: 'received',
+        });
+      } catch (dbError) {
+        console.warn('Database error (continuing anyway):', dbError.message);
+      }
+
+      const mailOptions = {
+        from: process.env.SMTP_FROM,
+        to: process.env.SMTP_USER,
+        subject: `New Contact: ${subject}`,
+        text: `From: ${senderName} (${senderEmail})\n\n${message}`,
+      };
+
+      await transporter.sendMail(mailOptions);
+      socket.emit('email-status', { status: 'success', message: 'Email sent successfully!' });
+    } catch (error) {
+      console.error('Email error:', error);
+      socket.emit('email-status', { status: 'error', message: 'Failed to send email' });
+    }
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected:', socket.id);
+  });
+});
+
 async function startServer() {
   try {
     await client.connect();
     console.log('Connected to MongoDB');
 
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
       console.log(`Server listening on port ${PORT}`);
     });
   } catch (error) {

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us - Florence, Alabama</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next/23.7.6/i18next.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next-http-backend/2.4.2/i18nextHttpBackend.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container-fluid">
+      <div class="header-content">
+        <div class="logo">
+          <h1 data-i18n="header.title">Florence, AL</h1>
+          <p class="tagline" data-i18n="header.tagline">Live Music & Dining Guide</p>
+        </div>
+        <nav class="navbar">
+          <button class="hamburger" id="hamburgerMenu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <ul class="nav-menu" id="navMenu">
+            <li><a href="index.html" data-i18n="navigation.home">Home</a></li>
+            <li><a href="restaurants.html" data-i18n="navigation.restaurants">Restaurants</a></li>
+            <li><a href="contact.html" data-i18n="navigation.contact">Contact</a></li>
+            <li class="language-selector">
+              <select id="languageSelect" onchange="changeLanguage(this.value)">
+                <option value="en">English</option>
+                <option value="es">Español</option>
+              </select>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=400&fit=crop" alt="Contact us">
+    <div class="hero-overlay">
+      <h2 data-i18n="contact.hero.title">Get In Touch</h2>
+      <p data-i18n="contact.hero.subtitle">We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      <section class="contact-section">
+        <div class="contact-container">
+          <!-- Contact Form -->
+          <div class="contact-form-wrapper">
+            <h2 data-i18n="contact.form.title">Send us a Message</h2>
+            <form id="contactForm" class="contact-form">
+              <div class="form-group">
+                <label for="senderName" data-i18n="contact.form.name">Name</label>
+                <input type="text" id="senderName" name="senderName" required data-i18n-placeholder="contact.form.namePlaceholder" placeholder="Your Name">
+              </div>
+
+              <div class="form-group">
+                <label for="senderEmail" data-i18n="contact.form.email">Email</label>
+                <input type="email" id="senderEmail" name="senderEmail" required data-i18n-placeholder="contact.form.emailPlaceholder" placeholder="your@email.com">
+              </div>
+
+              <div class="form-group">
+                <label for="subject" data-i18n="contact.form.subject">Subject</label>
+                <input type="text" id="subject" name="subject" required data-i18n-placeholder="contact.form.subjectPlaceholder" placeholder="What is this about?">
+              </div>
+
+              <div class="form-group">
+                <label for="message" data-i18n="contact.form.message">Message</label>
+                <textarea id="message" name="message" rows="6" required data-i18n-placeholder="contact.form.messagePlaceholder" placeholder="Your message here..."></textarea>
+              </div>
+
+              <button type="submit" class="btn-primary" id="submitBtn" data-i18n="contact.form.submit">Send Message</button>
+            </form>
+
+            <!-- Status Message -->
+            <div id="statusMessage" class="status-message" style="display: none;" role="status" aria-live="polite" aria-atomic="true"></div>
+          </div>
+
+          <!-- Contact Info -->
+          <div class="contact-info">
+            <h3 data-i18n="contact.info.title">Contact Information</h3>
+            
+            <div class="info-item">
+              <h4 data-i18n="contact.info.address">Address</h4>
+              <p>Florence, Alabama<br>United States</p>
+            </div>
+
+            <div class="info-item">
+              <h4 data-i18n="contact.info.phone">Phone</h4>
+              <p><a href="tel:+1256-760-6600">(256) 760-6600</a></p>
+            </div>
+
+            <div class="info-item">
+              <h4 data-i18n="contact.info.email">Email</h4>
+              <p><a href="mailto:info@florencealmusic.com">info@florencealmusic.com</a></p>
+            </div>
+
+            <div class="info-item">
+              <h4 data-i18n="contact.info.hours">Hours</h4>
+              <p>
+                <span data-i18n="contact.info.daysWeek">Monday - Sunday</span><br>
+                10:00 AM - 10:00 PM
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4 data-i18n="footer.about">About Florence</h4>
+          <p data-i18n="footer.aboutText">Florence is Alabama's music and entertainment destination in the Shoals region, offering premier dining and live music experiences.</p>
+        </div>
+        <div class="footer-section">
+          <h4 data-i18n="footer.quickLinks">Quick Links</h4>
+          <ul>
+            <li><a href="index.html" data-i18n="navigation.home">Home</a></li>
+            <li><a href="restaurants.html" data-i18n="navigation.restaurants">Restaurants</a></li>
+            <li><a href="contact.html" data-i18n="navigation.contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4 data-i18n="footer.contact">Contact</h4>
+          <p><span data-i18n="footer.email">Email</span>: info@florencealmusic.com</p>
+          <p><span data-i18n="footer.phone">Phone</span>: (256) 760-6600</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p data-i18n="footer.copyright">© 2026 Florence, Alabama - Music & Dining. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/contact.js"></script>
+</body>
+
+</html>
