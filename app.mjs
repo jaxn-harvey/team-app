@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { createServer } from 'http';
+import { Server as SocketIOServer } from 'socket.io';
 import { MongoClient, ServerApiVersion, ObjectId } from 'mongodb';
 import nodemailer from 'nodemailer';
 
@@ -58,6 +60,21 @@ function adminsCollection() {
 function restaurantsCollection() {
   return db().collection('restaurants');
 }
+
+function contactCollection() {
+  return db().collection('contact_messages');
+}
+
+// Email transporter setup
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers.authorization;
