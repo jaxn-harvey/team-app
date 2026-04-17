@@ -4,8 +4,6 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { createServer } from 'http';
-import { Server as SocketIOServer } from 'socket.io';
 import { MongoClient, ServerApiVersion, ObjectId } from 'mongodb';
 import nodemailer from 'nodemailer';
 
@@ -33,17 +31,6 @@ if (!JWT_SECRET) {
   throw new Error('JWT_SECRET is not defined in .env');
 }
 
-// Email transporter setup
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
-
 const client = new MongoClient(MONGO_URI, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -70,10 +57,6 @@ function adminsCollection() {
 
 function restaurantsCollection() {
   return db().collection('restaurants');
-}
-
-function contactCollection() {
-  return db().collection('contact_messages');
 }
 
 function authenticateToken(req, res, next) {
