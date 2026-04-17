@@ -5,29 +5,58 @@ import bcrypt from 'bcrypt';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { MongoClient, ServerApiVersion, ObjectId } from 'mongodb';
+import nodemailer from 'nodemailer';
 
 const app = express();
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const uri = process.env.MONGO_URI;
-const PORT = process.env.PORT || 3000;
-const JWT_SECRET = process.env.JWT_SECRET || 'change_this_secret';
+const server = createServer(app);
+const io = new SocketIOServer(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+  },
+});
 
-const client = new MongoClient(uri, {
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const PORT = process.env.PORT || 3000;
+const MONGO_URI = process.env.MONGO_URI;
+const JWT_SECRET = process.env.JWT_SECRET;
+const DB_NAME = process.env.DB_NAME || 'shoals_dining_guide';
+
+if (!MONGO_URI) {
+  throw new Error('MONGO_URI is not defined in .env');
+}
+
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET is not defined in .env');
+}
+
+const client = new MongoClient(MONGO_URI, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
-  }
+  },
 });
-
-const yourNameAndEmoji = { name: 'Jackson', emoji: '☀️' };
 
 app.use(express.static(join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-function getDb() {
-  return client.db('cis486');
+function db() {
+  return client.db(DB_NAME);
+}
+
+function usersCollection() {
+  return db().collection('users');
+}
+
+function adminsCollection() {
+  return db().collection('admins');
+}
+
+function restaurantsCollection() {
+  return db().collection('restaurants');
 }
 
 function authenticateToken(req, res, next) {
@@ -51,119 +80,96 @@ function requireAdmin(req, res, next) {
   if (!req.user || req.user.role !== 'admin') {
     return res.status(403).json({ error: 'Admins only.' });
   }
+
   next();
+}
+
+function parseBoolean(value) {
+  return value === true || value === 'true' || value === 'on' || value === 1 || value === '1';
+}
+
+function buildRestaurantPayload(body) {
+  return {
+    name: body.name?.trim() || '',
+    cuisine: body.cuisine?.trim() || '',
+    description: body.description?.trim() || '',
+    image: body.image?.trim() || '',
+    address: body.address?.trim() || '',
+    phone: body.phone?.trim() || '',
+    hours: body.hours?.trim() || '',
+    rating: Number(body.rating) || 0,
+    reviews: Number(body.reviews) || 0,
+    liveMusic: parseBoolean(body.liveMusic),
+    musicSchedule: body.musicSchedule?.trim() || '',
+    featured: parseBoolean(body.featured),
+    heritage: body.heritage?.trim() || '',
+    lat: Number(body.lat) || 0,
+    lng: Number(body.lng) || 0,
+  };
+}
+
+function validateRestaurantPayload(restaurant) {
+  if (!restaurant.name || !restaurant.cuisine || !restaurant.description || !restaurant.address) {
+    return 'Name, cuisine, description, and address are required.';
+  }
+
+  return null;
 }
 
 app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'public', 'index.html'));
 });
 
-app.post('/api/get-name', async (req, res) => {
+//
+// PUBLIC READ ONLY ROUTES
+//
+
+app.get('/api/restaurants', async (req, res) => {
   try {
-    const { userName } = req.body;
-
-    if (!userName) {
-      return res.status(400).json({ error: 'missing name' });
-    }
-
-    const db = getDb();
-    const collection = db.collection('exam');
-
-    const result = await collection.findOne({ name: userName });
-
-    if (!result) {
-      return res.status(404).json({ error: 'Name not found' });
-    }
-
-    res.json({
-      message: 'Name found',
-      name: result.name,
-      emoji: result.emoji
-    });
+    const restaurants = await restaurantsCollection().find({}).toArray();
+    res.json(restaurants);
   } catch (error) {
-    console.error('Error retrieving name:', error);
-    res.status(500).json({ error: 'Failed to retrieve name' });
+    console.error('Error fetching restaurants:', error);
+    res.status(500).json({ error: 'Failed to fetch restaurants.' });
   }
 });
 
-app.get('/api/init-emoji', async (req, res) => {
+app.get('/api/restaurants/:id', async (req, res) => {
   try {
-    const db = getDb();
-    const collection = db.collection('exam');
+    const restaurant = await restaurantsCollection().findOne({
+      _id: new ObjectId(req.params.id),
+    });
 
-    const existingEntry = await collection.findOne({ name: yourNameAndEmoji.name });
-
-    if (existingEntry) {
-      return res.json({
-        message: 'Name already exists',
-        data: existingEntry
-      });
+    if (!restaurant) {
+      return res.status(404).json({ error: 'Restaurant not found.' });
     }
 
-    const result = await collection.insertOne(yourNameAndEmoji);
-    res.json({ message: 'name & emoji recorded', id: result.insertedId });
+    res.json(restaurant);
   } catch (error) {
-    console.error('Error creating attendance:', error);
-    res.status(500).json({ error: 'Failed to retrieve emoji' });
+    console.error('Error fetching restaurant:', error);
+    res.status(500).json({ error: 'Failed to fetch restaurant.' });
   }
 });
 
-/* =========================
-   ADMIN AUTH ROUTES
-========================= */
-
-app.post('/api/setup/create-admin', async (req, res) => {
-  try {
-    const { username, password } = req.body;
-
-    if (!username || !password) {
-      return res.status(400).json({ error: 'Username and password are required.' });
-    }
-
-    const db = getDb();
-    const admins = db.collection('admins');
-
-    const existingAdmin = await admins.findOne({ username: username.trim() });
-    if (existingAdmin) {
-      return res.status(409).json({ error: 'Admin already exists.' });
-    }
-
-    const passwordHash = await bcrypt.hash(password, 10);
-
-    const result = await admins.insertOne({
-      username: username.trim(),
-      passwordHash,
-      role: 'admin',
-      createdAt: new Date()
-    });
-
-    res.status(201).json({
-      message: 'Admin created successfully.',
-      insertedId: result.insertedId
-    });
-  } catch (error) {
-    console.error('Error creating admin:', error);
-    res.status(500).json({ error: 'Failed to create admin.' });
-  }
-});
+//
+// AUTH ROUTES
+// checks admins first, then users
+//
 
 app.post('/api/auth/login', async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const username = req.body.username?.trim();
+    const password = req.body.password;
 
     if (!username || !password) {
       return res.status(400).json({ error: 'Username and password are required.' });
     }
 
-    const db = getDb();
-    const admins = db.collection('admins');
-    const users = db.collection('users');
-
-    let account = await admins.findOne({ username: username.trim() });
+    let account = await adminsCollection().findOne({ username });
     let role = 'admin';
 
     if (!account) {
-      account = await users.findOne({ username: username.trim() });
+      account = await usersCollection().findOne({ username });
       role = 'user';
     }
 
@@ -172,6 +178,7 @@ app.post('/api/auth/login', async (req, res) => {
     }
 
     const passwordMatch = await bcrypt.compare(password, account.passwordHash);
+
     if (!passwordMatch) {
       return res.status(401).json({ error: 'Invalid credentials.' });
     }
@@ -180,7 +187,7 @@ app.post('/api/auth/login', async (req, res) => {
       {
         userId: String(account._id),
         username: account.username,
-        role
+        role,
       },
       JWT_SECRET,
       { expiresIn: '2h' }
@@ -189,7 +196,7 @@ app.post('/api/auth/login', async (req, res) => {
     res.json({
       message: 'Login successful.',
       token,
-      role
+      role,
     });
   } catch (error) {
     console.error('Login error:', error);
@@ -197,38 +204,22 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-app.get('/api/auth/me', authenticateToken, (req, res) => {
+app.get('/api/auth/me', authenticateToken, async (req, res) => {
   res.json({
     userId: req.user.userId,
     username: req.user.username,
-    role: req.user.role
+    role: req.user.role,
   });
 });
 
-/* =========================
-   RESTAURANT ROUTES
-========================= */
-
-app.get('/api/restaurants', async (req, res) => {
-  try {
-    const db = getDb();
-    const restaurants = db.collection('restaurants');
-
-    const result = await restaurants.find({}).toArray();
-    res.json(result);
-  } catch (error) {
-    console.error('Error fetching restaurants:', error);
-    res.status(500).json({ error: 'Failed to fetch restaurants.' });
-  }
-});
+//
+// ADMIN ROUTES: FULL CRUD
+//
 
 app.get('/api/admin/restaurants', authenticateToken, requireAdmin, async (req, res) => {
   try {
-    const db = getDb();
-    const restaurants = db.collection('restaurants');
-
-    const result = await restaurants.find({}).toArray();
-    res.json(result);
+    const restaurants = await restaurantsCollection().find({}).toArray();
+    res.json(restaurants);
   } catch (error) {
     console.error('Error fetching admin restaurants:', error);
     res.status(500).json({ error: 'Failed to fetch restaurants.' });
@@ -237,34 +228,22 @@ app.get('/api/admin/restaurants', authenticateToken, requireAdmin, async (req, r
 
 app.post('/api/admin/restaurants', authenticateToken, requireAdmin, async (req, res) => {
   try {
-    const db = getDb();
-    const restaurants = db.collection('restaurants');
+    const restaurant = buildRestaurantPayload(req.body);
+    const validationError = validateRestaurantPayload(restaurant);
 
-    const newRestaurant = {
-      name: req.body.name?.trim() || '',
-      cuisine: req.body.cuisine?.trim() || '',
-      description: req.body.description?.trim() || '',
-      address: req.body.address?.trim() || '',
-      phone: req.body.phone?.trim() || '',
-      hours: req.body.hours?.trim() || '',
-      rating: Number(req.body.rating) || 0,
-      reviews: Number(req.body.reviews) || 0,
-      image: req.body.image?.trim() || '',
-      lat: Number(req.body.lat) || 0,
-      lng: Number(req.body.lng) || 0,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-
-    if (!newRestaurant.name || !newRestaurant.cuisine || !newRestaurant.address) {
-      return res.status(400).json({ error: 'Name, cuisine, and address are required.' });
+    if (validationError) {
+      return res.status(400).json({ error: validationError });
     }
 
-    const result = await restaurants.insertOne(newRestaurant);
+    const result = await restaurantsCollection().insertOne({
+      ...restaurant,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
 
     res.status(201).json({
       message: 'Restaurant created successfully.',
-      insertedId: result.insertedId
+      insertedId: result.insertedId,
     });
   } catch (error) {
     console.error('Error creating restaurant:', error);
@@ -272,18 +251,41 @@ app.post('/api/admin/restaurants', authenticateToken, requireAdmin, async (req, 
   }
 });
 
-app.delete('/api/admin/restaurants/:id', authenticateToken, requireAdmin, async (req, res) => {
+app.put('/api/admin/restaurants/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
-    const { id } = req.params;
+    const restaurant = buildRestaurantPayload(req.body);
+    const validationError = validateRestaurantPayload(restaurant);
 
-    if (!ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'Invalid restaurant id.' });
+    if (validationError) {
+      return res.status(400).json({ error: validationError });
     }
 
-    const db = getDb();
-    const restaurants = db.collection('restaurants');
+    const result = await restaurantsCollection().updateOne(
+      { _id: new ObjectId(req.params.id) },
+      {
+        $set: {
+          ...restaurant,
+          updatedAt: new Date(),
+        },
+      }
+    );
 
-    const result = await restaurants.deleteOne({ _id: new ObjectId(id) });
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ error: 'Restaurant not found.' });
+    }
+
+    res.json({ message: 'Restaurant updated successfully.' });
+  } catch (error) {
+    console.error('Error updating restaurant:', error);
+    res.status(500).json({ error: 'Failed to update restaurant.' });
+  }
+});
+
+app.delete('/api/admin/restaurants/:id', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const result = await restaurantsCollection().deleteOne({
+      _id: new ObjectId(req.params.id),
+    });
 
     if (result.deletedCount === 0) {
       return res.status(404).json({ error: 'Restaurant not found.' });
@@ -296,13 +298,137 @@ app.delete('/api/admin/restaurants/:id', authenticateToken, requireAdmin, async 
   }
 });
 
+//
+// OPTIONAL SEED ROUTE FOR FIRST ADMIN
+// remove or protect later if your instructor wants
+//
+
+app.post('/api/setup/create-admin', async (req, res) => {
+  try {
+    const username = req.body.username?.trim();
+    const password = req.body.password;
+
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username and password are required.' });
+    }
+
+    const existingAdmin = await adminsCollection().findOne({ username });
+
+    if (existingAdmin) {
+      return res.status(409).json({ error: 'Admin already exists.' });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const result = await adminsCollection().insertOne({
+      username,
+      passwordHash,
+      role: 'admin',
+      createdAt: new Date(),
+    });
+
+    res.status(201).json({
+      message: 'Admin created successfully.',
+      insertedId: result.insertedId,
+    });
+  } catch (error) {
+    console.error('Error creating admin:', error);
+    res.status(500).json({ error: 'Failed to create admin.' });
+  }
+});
+
+// ==================== CONTACT / EMAIL ROUTES ====================
+
+app.post('/api/contact', async (req, res) => {
+  const { senderName, senderEmail, subject, message } = req.body;
+
+  try {
+    if (!senderName || !senderEmail || !subject || !message) {
+      return res.status(400).json({ error: 'All fields required' });
+    }
+
+    try {
+      await contactCollection().insertOne({
+        name: senderName,
+        email: senderEmail,
+        subject: subject,
+        message: message,
+        timestamp: new Date(),
+        status: 'received',
+      });
+    } catch (dbError) {
+      console.warn('Database error (continuing anyway):', dbError.message);
+    }
+
+    const mailOptions = {
+      from: process.env.SMTP_FROM,
+      to: process.env.SMTP_USER,
+      subject: `New Contact: ${subject}`,
+      text: `From: ${senderName} (${senderEmail})\n\n${message}`,
+    };
+
+    await transporter.sendMail(mailOptions);
+    res.json({ status: 'success', message: 'Email sent successfully!' });
+  } catch (error) {
+    console.error('Contact endpoint error:', error);
+    res.status(500).json({ error: 'Failed to send email' });
+  }
+});
+
+// ==================== WEBSOCKET & EMAIL HANDLING ====================
+
+io.on('connection', (socket) => {
+  console.log('Client connected:', socket.id);
+
+  socket.on('send-contact-email', async (data) => {
+    const { senderName, senderEmail, subject, message } = data;
+
+    try {
+      if (!senderName || !senderEmail || !subject || !message) {
+        socket.emit('email-status', { status: 'error', message: 'All fields required' });
+        return;
+      }
+
+      try {
+        await contactCollection().insertOne({
+          name: senderName,
+          email: senderEmail,
+          subject: subject,
+          message: message,
+          timestamp: new Date(),
+          status: 'received',
+        });
+      } catch (dbError) {
+        console.warn('Database error (continuing anyway):', dbError.message);
+      }
+
+      const mailOptions = {
+        from: process.env.SMTP_FROM,
+        to: process.env.SMTP_USER,
+        subject: `New Contact: ${subject}`,
+        text: `From: ${senderName} (${senderEmail})\n\n${message}`,
+      };
+
+      await transporter.sendMail(mailOptions);
+      socket.emit('email-status', { status: 'success', message: 'Email sent successfully!' });
+    } catch (error) {
+      console.error('Email error:', error);
+      socket.emit('email-status', { status: 'error', message: 'Failed to send email' });
+    }
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected:', socket.id);
+  });
+});
+
 async function startServer() {
   try {
     await client.connect();
     console.log('Connected to MongoDB');
 
-    app.listen(PORT, () => {
-      console.log(`Example app listening on port ${PORT}`);
+    server.listen(PORT, () => {
+      console.log(`Server listening on port ${PORT}`);
     });
   } catch (error) {
     console.error('Failed to start server:', error);

@@ -8,8 +8,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-  <link rel="stylesheet" href="css/styles.css">
-</head>
+  <link rel="stylesheet" href="css/styles.css">    <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next/23.7.6/i18next.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next-http-backend/2.4.2/i18nextHttpBackend.min.js"></script></head>
 
 <body>
   <!-- Header -->
@@ -17,8 +17,8 @@
     <div class="container-fluid">
       <div class="header-content">
         <div class="logo">
-          <h1>Florence, AL</h1>
-          <p class="tagline">Live Music & Dining Guide</p>
+          <h1 data-i18n="header.title">Florence, AL</h1>
+          <p class="tagline" data-i18n="header.tagline">Live Music & Dining Guide</p>
         </div>
         <nav class="navbar">
           <button class="hamburger" id="hamburgerMenu">
@@ -27,9 +27,15 @@
             <span></span>
           </button>
           <ul class="nav-menu" id="navMenu">
-            <li><a href="#home">Home</a></li>
-            <li><a href="restaurants.html">Restaurants</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="#home" data-i18n="navigation.home">Home</a></li>
+            <li><a href="restaurants.html" data-i18n="navigation.restaurants">Restaurants</a></li>
+            <li><a href="contact.html" data-i18n="navigation.contact">Contact</a></li>
+            <li class="language-selector">
+              <select id="languageSelect" onchange="changeLanguage(this.value)">
+                <option value="en">English</option>
+                <option value="es">Español</option>
+              </select>
+            </li>
           </ul>
         </nav>
       </div>
@@ -38,10 +44,10 @@
 
   <!-- Hero Section -->
   <section class="hero">
-    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1200&h=400&fit=crop" alt="Live music performance">
+    <img src="../assets/downtown_florence_images/downtown_florence_3_billingsley_photography.jpg" alt="Photo by Billingsley Photography">
     <div class="hero-overlay">
-      <h2>Florence, Alabama's Vibrant Music & Dining Scene</h2>
-      <p>Discover the heart of the Tennessee Valley's live music and culinary hotspots</p>
+      <h2 data-i18n="hero.title">Florence, Alabama's Vibrant Music & Dining Scene</h2>
+      <p data-i18n="hero.subtitle">Discover the heart of the Tennessee Valley's live music and culinary hotspots</p>
     </div>
   </section>
 
@@ -50,30 +56,30 @@
     <div class="container">
       <!-- Map Section -->
       <section class="map-section">
-        <h2>Find Venues Near You</h2>
+        <h2 data-i18n="map.title">Find Venues Near You</h2>
         <div id="map"></div>
       </section>
 
       <!-- Florence Heritage & Music Scene -->
       <section class="heritage-section">
         <div class="heritage-content">
-          <h3>Florence's Music & Entertainment Hub</h3>
-          <p>Florence, Alabama is home to a thriving live music scene and award-winning restaurants. Nestled in Alabama's historic Shoals region near the Tennessee River, Florence offers an exceptional blend of Southern hospitality, world-class entertainment, and culinary excellence. Whether you're catching live performances at local venues or dining at celebrated restaurants, Florence delivers authentic experiences in the heart of the Tennessee Valley.</p>
+          <h3 data-i18n="heritage.title">Florence's Music & Entertainment Hub</h3>
+          <p data-i18n="heritage.description">Florence, Alabama is home to a thriving live music scene and award-winning restaurants. Nestled in Alabama's historic Shoals region near the Tennessee River, Florence offers an exceptional blend of Southern hospitality, world-class entertainment, and culinary excellence. Whether you're catching live performances at local venues or dining at celebrated restaurants, Florence delivers authentic experiences in the heart of the Tennessee Valley.</p>
           <div class="heritage-features">
             <div class="heritage-feature">
               <span class="feature-icon"></span>
-              <h4>Live Music Venues</h4>
-              <p>Premier venues hosting nightly performances</p>
+              <h4 data-i18n="heritage.features.liveMusic">Live Music Venues</h4>
+              <p data-i18n="heritage.features.liveMusicDesc">Premier venues hosting nightly performances</p>
             </div>
             <div class="heritage-feature">
               <span class="feature-icon"></span>
-              <h4>Fine Dining</h4>
-              <p>Award-winning restaurants and local favorites</p>
+              <h4 data-i18n="heritage.features.fineDining">Fine Dining</h4>
+              <p data-i18n="heritage.features.fineDiningDesc">Award-winning restaurants and local favorites</p>
             </div>
             <div class="heritage-feature">
               <span class="feature-icon"></span>
-              <h4>Tennessee River</h4>
-              <p>Scenic waterfront dining and entertainment</p>
+              <h4 data-i18n="heritage.features.river">Tennessee River</h4>
+              <p data-i18n="heritage.features.riverDesc">Scenic waterfront dining and entertainment</p>
             </div>
           </div>
         </div>
@@ -81,12 +87,12 @@
 
       <!-- Featured Restaurants -->
       <section class="featured-section">
-        <h2>Featured Venues</h2>
+        <h2 data-i18n="featured.title">Featured Venues</h2>
         <div class="restaurants-grid" id="restaurantsGrid">
           <!-- Restaurant cards will be populated by JavaScript -->
         </div>
         <div class="view-all">
-          <a href="restaurants.html" class="btn-primary">View All Restaurants</a>
+          <a href="restaurants.html" class="btn-primary" data-i18n="featured.viewAll">View All Restaurants</a>
         </div>
       </section>
     </div>
@@ -97,30 +103,31 @@
     <div class="container">
       <div class="footer-content">
         <div class="footer-section">
-          <h4>About Florence</h4>
-          <p>Florence is Alabama's music and entertainment destination in the Shoals region, offering premier dining and live music experiences.</p>
+          <h4 data-i18n="footer.about">About Florence</h4>
+          <p data-i18n="footer.aboutText">Florence is Alabama's music and entertainment destination in the Shoals region, offering premier dining and live music experiences.</p>
         </div>
         <div class="footer-section">
-          <h4>Quick Links</h4>
+          <h4 data-i18n="footer.quickLinks">Quick Links</h4>
           <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="restaurants.html">Restaurants</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="#home" data-i18n="navigation.home">Home</a></li>
+            <li><a href="restaurants.html" data-i18n="navigation.restaurants">Restaurants</a></li>
+            <li><a href="contact.html" data-i18n="navigation.contact">Contact</a></li>
           </ul>
         </div>
         <div class="footer-section">
-          <h4>Contact</h4>
-          <p>Email: info@florencealmusic.com</p>
-          <p>Phone: (256) 760-6600</p>
+          <h4 data-i18n="footer.contact">Contact</h4>
+          <p><span data-i18n="footer.email">Email</span>: info@florencealmusic.com</p>
+          <p><span data-i18n="footer.phone">Phone</span>: (256) 760-6600</p>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2026 Florence, Alabama - Music & Dining. All rights reserved.</p>
+        <p data-i18n="footer.copyright">© 2026 Florence, Alabama - Music & Dining. All rights reserved.</p>
       </div>
     </div>
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/app.js"></script>
 </body>
 

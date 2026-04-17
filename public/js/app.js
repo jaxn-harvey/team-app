@@ -177,10 +177,10 @@ function displayFeaturedRestaurants() {
       <div class="restaurant-info">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
           <h3>${restaurant.name}</h3>
-          ${restaurant.featured ? '<span style="font-size: 18px; margin-left: 8px;">Featured</span>' : ''}
+          ${restaurant.featured ? '<span style="font-size: 18px; margin-left: 8px;">' + i18next.t('restaurants.featured') + '</span>' : ''}
         </div>
         <div class="restaurant-cuisine">${restaurant.cuisine}</div>
-        ${restaurant.liveMusic ? '<div style="color: var(--highlight-color); font-weight: 600; font-size: 13px; margin-bottom: 8px;">Live Music Venue</div>' : ''}
+        ${restaurant.liveMusic ? '<div style="color: var(--highlight-color); font-weight: 600; font-size: 13px; margin-bottom: 8px;">' + i18next.t('restaurants.liveMusic') + ' Venue</div>' : ''}
         <p class="restaurant-description">${restaurant.description.substring(0, 80)}...</p>
         <div class="restaurant-rating">${restaurant.rating} (${restaurant.reviews} reviews)</div>
       </div>
@@ -198,33 +198,33 @@ function displayRestaurantsList() {
       <img src="${restaurant.image}" alt="${restaurant.name}" class="restaurant-item-image">
       <div class="restaurant-item-content">
         <div class="restaurant-item-header">
-          <h3>${restaurant.name}${restaurant.featured ? ' - Featured' : ''}</h3>
+          <h3>${restaurant.name}${restaurant.featured ? ' - ' + i18next.t('restaurants.featured') : ''}</h3>
           <span class="restaurant-cuisine-tag">${restaurant.cuisine}</span>
-          ${restaurant.liveMusic ? '<span class="live-music-badge">Live Music</span>' : ''}
+          ${restaurant.liveMusic ? '<span class="live-music-badge">' + i18next.t('restaurants.liveMusic') + '</span>' : ''}
         </div>
         ${restaurant.heritage ? `<div class="heritage-label">${restaurant.heritage}</div>` : ''}
         <div class="restaurant-details">
           <div class="detail-row">
-            <span class="detail-label">Address:</span>
+            <span class="detail-label">${i18next.t('restaurants.address')}:</span>
             <span>${restaurant.address}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Phone:</span>
+            <span class="detail-label">${i18next.t('restaurants.phone')}:</span>
             <span>${restaurant.phone}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Hours:</span>
+            <span class="detail-label">${i18next.t('restaurants.hours')}:</span>
             <span>${restaurant.hours}</span>
           </div>
           ${restaurant.liveMusic ? `<div class="detail-row">
-            <span class="detail-label">Music:</span>
+            <span class="detail-label">${i18next.t('restaurants.music')}:</span>
             <span>${restaurant.musicSchedule}</span>
           </div>` : ''}
         </div>
         <p class="restaurant-description">${restaurant.description}</p>
         <div class="restaurant-rating">${restaurant.rating} (${restaurant.reviews} reviews)</div>
-        <button class="btn-learn-more" onclick="alert('Contact ${restaurant.name}:\\n${restaurant.phone}\\n\\nHours: ${restaurant.hours}')">
-          Get Contact Info
+        <button class="btn-learn-more" onclick="alert('Contact ${restaurant.name}:\\n${restaurant.phone}\\n\\n${i18next.t('restaurants.hours')}: ${restaurant.hours}')">
+          ${i18next.t('restaurants.contact')}
         </button>
       </div>
     </div>

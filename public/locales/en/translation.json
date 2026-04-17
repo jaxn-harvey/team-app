@@ -1,0 +1,111 @@
+{
+  "header": {
+    "title": "Florence, AL",
+    "tagline": "Live Music & Dining Guide"
+  },
+  "navigation": {
+    "home": "Home",
+    "restaurants": "Restaurants",
+    "contact": "Contact",
+    "language": "Language"
+  },
+  "hero": {
+    "title": "Florence, Alabama's Vibrant Music & Dining Scene",
+    "subtitle": "Discover the heart of the Tennessee Valley's live music and culinary hotspots"
+  },
+  "map": {
+    "title": "Find Venues Near You"
+  },
+  "heritage": {
+    "title": "Florence's Music & Entertainment Hub",
+    "description": "Florence, Alabama is home to a thriving live music scene and award-winning restaurants. Nestled in Alabama's historic Shoals region near the Tennessee River, Florence offers an exceptional blend of Southern hospitality, world-class entertainment, and culinary excellence. Whether you're catching live performances at local venues or dining at celebrated restaurants, Florence delivers authentic experiences in the heart of the Tennessee Valley.",
+    "features": {
+      "liveMusic": "Live Music Venues",
+      "liveMusicDesc": "Premier venues hosting nightly performances",
+      "fineDining": "Fine Dining",
+      "fineDiningDesc": "Award-winning restaurants and local favorites",
+      "river": "Tennessee River",
+      "riverDesc": "Scenic waterfront dining and entertainment"
+    }
+  },
+  "featured": {
+    "title": "Featured Venues",
+    "viewAll": "View All Restaurants"
+  },
+  "footer": {
+    "about": "About Florence",
+    "aboutText": "Florence is Alabama's music and entertainment destination in the Shoals region, offering premier dining and live music experiences.",
+    "quickLinks": "Quick Links",
+    "contact": "Contact",
+    "email": "Email",
+    "phone": "Phone",
+    "copyright": "© 2026 Florence, Alabama - Music & Dining. All rights reserved."
+  },
+  "restaurants": {
+    "hero": {
+      "title": "All Restaurants & Music Venues",
+      "subtitle": "Experience Florence's finest dining and live music"
+    },
+    "title": "All Restaurants & Music Venues",
+    "subtitle": "Explore Florence's best dining establishments with live music",
+    "search": "Search restaurants...",
+    "allCuisines": "All Cuisines",
+    "cuisines": {
+      "all": "All Cuisines",
+      "american": "American",
+      "casual": "Casual American",
+      "casualAmerican": "Casual American",
+      "soulFood": "Soul Food",
+      "bbq": "Barbecue",
+      "barbecue": "Barbecue",
+      "pizza": "Pizza & Italian",
+      "tapas": "Tapas & Small Plates",
+      "fineDining": "Fine Dining"
+    },
+    "address": "Address",
+    "phone": "Phone",
+    "hours": "Hours",
+    "music": "Music",
+    "contact": "Get Contact Info",
+    "featured": "Featured",
+    "liveMusic": "Live Music"
+  },
+  "contact": {
+    "hero": {
+      "title": "Get In Touch",
+      "subtitle": "We'd love to hear from you. Send us a message and we'll respond as soon as possible."
+    },
+    "form": {
+      "title": "Send us a Message",
+      "name": "Name",
+      "namePlaceholder": "Your Name",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "subject": "Subject",
+      "subjectPlaceholder": "What is this about?",
+      "message": "Message",
+      "messagePlaceholder": "Your message here...",
+      "submit": "Send Message"
+    },
+    "status": {
+      "sending": "Sending your message...",
+      "success": "Email sent successfully! We'll get back to you soon.",
+      "error": "Failed to send email. Please try again.",
+      "disconnected": "Connection lost. Please check your internet.",
+      "connectionError": "Unable to connect to server.",
+      "timeout": "No response from server. Please try again."
+    },
+    "validation": {
+      "required": "This field is required",
+      "invalidEmail": "Please enter a valid email address"
+    },
+    "info": {
+      "title": "Contact Information",
+      "address": "Address",
+      "phone": "Phone",
+      "email": "Email",
+      "hours": "Hours",
+      "daysWeek": "Monday - Sunday"
+    }
+  }
+}
