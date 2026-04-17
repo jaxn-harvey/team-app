@@ -1,9 +1,9 @@
-
-import 'dotenv/config'; 
+import 'dotenv/config';
 import express from 'express';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { readFile } from 'fs/promises';
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import { MongoClient, ServerApiVersion, ObjectId } from 'mongodb';
@@ -13,15 +13,25 @@ const app = express();
 const server = createServer(app);
 const io = new SocketIOServer(server, {
   cors: {
-    origin: "*",
-    methods: ["GET", "POST"]
-  }
+    origin: '*',
+    methods: ['GET', 'POST'],
+  },
 });
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const uri = process.env.MONGO_URI;
 
 const PORT = process.env.PORT || 3000;
+const MONGO_URI = process.env.MONGO_URI;
+const JWT_SECRET = process.env.JWT_SECRET;
+const DB_NAME = process.env.DB_NAME || 'shoals_dining_guide';
+
+if (!MONGO_URI) {
+  throw new Error('MONGO_URI is not defined in .env');
+}
+
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET is not defined in .env');
+}
 
 // Email transporter setup
 const transporter = nodemailer.createTransport({
@@ -30,92 +40,360 @@ const transporter = nodemailer.createTransport({
   secure: true,
   auth: {
     user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS
-  }
+    pass: process.env.SMTP_PASS,
+  },
 });
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
+const client = new MongoClient(MONGO_URI, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
-  }
+  },
 });
 
-const yourNameAndEmoji = { name: 'Jackson', emoji: '☀️' };
-
-
-//app instantiations
 app.use(express.static(join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+function db() {
+  return client.db(DB_NAME);
+}
+
+function usersCollection() {
+  return db().collection('users');
+}
+
+function adminsCollection() {
+  return db().collection('admins');
+}
+
+function restaurantsCollection() {
+  return db().collection('restaurants');
+}
+
+function contactCollection() {
+  return db().collection('contact_messages');
+}
+
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ error: 'Access denied. No token provided.' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    return res.status(403).json({ error: 'Invalid or expired token.' });
+  }
+}
+
+function requireAdmin(req, res, next) {
+  if (!req.user || req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Admins only.' });
+  }
+
+  next();
+}
+
+function parseBoolean(value) {
+  return value === true || value === 'true' || value === 'on' || value === 1 || value === '1';
+}
+
+function buildRestaurantPayload(body) {
+  return {
+    name: body.name?.trim() || '',
+    cuisine: body.cuisine?.trim() || '',
+    description: body.description?.trim() || '',
+    image: body.image?.trim() || '',
+    address: body.address?.trim() || '',
+    phone: body.phone?.trim() || '',
+    hours: body.hours?.trim() || '',
+    rating: Number(body.rating) || 0,
+    reviews: Number(body.reviews) || 0,
+    liveMusic: parseBoolean(body.liveMusic),
+    musicSchedule: body.musicSchedule?.trim() || '',
+    featured: parseBoolean(body.featured),
+    heritage: body.heritage?.trim() || '',
+    lat: Number(body.lat) || 0,
+    lng: Number(body.lng) || 0,
+  };
+}
+
+function validateRestaurantPayload(restaurant) {
+  if (!restaurant.name || !restaurant.cuisine || !restaurant.description || !restaurant.address) {
+    return 'Name, cuisine, description, and address are required.';
+  }
+
+  return null;
+}
 
 app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'public', 'index.html'));
-})
+});
 
-app.post('/api/get-name', async (req, res) => {
+//
+// PUBLIC READ ONLY ROUTES
+//
+
+app.get('/api/restaurants', async (req, res) => {
   try {
-    const { userName } = req.body;
+    const restaurants = await restaurantsCollection().find({}).toArray();
+    res.json(restaurants);
+  } catch (error) {
+    console.error('Error fetching restaurants:', error);
+    res.status(500).json({ error: 'Failed to fetch restaurants.' });
+  }
+});
 
-    if (!userName) {
-      return res.status(400).json({ error: 'missing name' });
-    }
-
-    const db = client.db('cis486');
-    const collection = db.collection('exam');
-
-    const result = await collection.findOne({ name: userName });
-
-    if (!result) {
-      return res.status(404).json({ error: 'Name not found' });
-    }
-
-    res.json({ 
-      message: 'Name found', 
-      name: result.name,
-      emoji: result.emoji 
+app.get('/api/restaurants/:id', async (req, res) => {
+  try {
+    const restaurant = await restaurantsCollection().findOne({
+      _id: new ObjectId(req.params.id),
     });
-  }
-  catch (error) {
-    console.error('Error retrieving name:', error);
-    res.status(500).json({ error: 'Failed to retrieve name' });
-  }
 
-})
-
-/* 
-👇🏻no modifications needed for this endpoint, but you do have to figure out where, when, & how to call it at least once!
-*/
-app.get('/api/init-emoji', async (req, res) => {
-  try {
-    
-    const db = client.db('cis486');
-    const collection = db.collection('exam');
-    
-    // Check if name already exists
-    const existingEntry = await collection.findOne({ name: yourNameAndEmoji.name });
-    
-    if (existingEntry) {
-      return res.json({ 
-        message: 'Name already exists', 
-        data: existingEntry 
-      });
+    if (!restaurant) {
+      return res.status(404).json({ error: 'Restaurant not found.' });
     }
-    
-    // Only insert if name doesn't exist
-    const result = await collection.insertOne(yourNameAndEmoji);
-    res.json({ message: 'name & emoji recorded', id: result.insertedId });
+
+    res.json(restaurant);
+  } catch (error) {
+    console.error('Error fetching restaurant:', error);
+    res.status(500).json({ error: 'Failed to fetch restaurant.' });
   }
-  catch (error) {
-    console.error('Error creating attendance:', error);
-    res.status(500).json({ error: 'Failed to retrieve emoji' });
+});
+
+//
+// AUTH ROUTES
+// checks admins first, then users
+//
+
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const username = req.body.username?.trim();
+    const password = req.body.password;
+
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username and password are required.' });
+    }
+
+    let account = await adminsCollection().findOne({ username });
+    let role = 'admin';
+
+    if (!account) {
+      account = await usersCollection().findOne({ username });
+      role = 'user';
+    }
+
+    if (!account) {
+      return res.status(401).json({ error: 'Invalid credentials.' });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, account.passwordHash);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ error: 'Invalid credentials.' });
+    }
+
+    const token = jwt.sign(
+      {
+        userId: String(account._id),
+        username: account.username,
+        role,
+      },
+      JWT_SECRET,
+      { expiresIn: '2h' }
+    );
+
+    res.json({
+      message: 'Login successful.',
+      token,
+      role,
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Login failed.' });
   }
-})
+});
+
+app.get('/api/auth/me', authenticateToken, async (req, res) => {
+  res.json({
+    userId: req.user.userId,
+    username: req.user.username,
+    role: req.user.role,
+  });
+});
+
+//
+// ADMIN ROUTES: FULL CRUD
+//
+
+app.get('/api/admin/restaurants', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const restaurants = await restaurantsCollection().find({}).toArray();
+    res.json(restaurants);
+  } catch (error) {
+    console.error('Error fetching admin restaurants:', error);
+    res.status(500).json({ error: 'Failed to fetch restaurants.' });
+  }
+});
+
+app.post('/api/admin/restaurants', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const restaurant = buildRestaurantPayload(req.body);
+    const validationError = validateRestaurantPayload(restaurant);
+
+    if (validationError) {
+      return res.status(400).json({ error: validationError });
+    }
+
+    const result = await restaurantsCollection().insertOne({
+      ...restaurant,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    res.status(201).json({
+      message: 'Restaurant created successfully.',
+      insertedId: result.insertedId,
+    });
+  } catch (error) {
+    console.error('Error creating restaurant:', error);
+    res.status(500).json({ error: 'Failed to create restaurant.' });
+  }
+});
+
+app.put('/api/admin/restaurants/:id', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const restaurant = buildRestaurantPayload(req.body);
+    const validationError = validateRestaurantPayload(restaurant);
+
+    if (validationError) {
+      return res.status(400).json({ error: validationError });
+    }
+
+    const result = await restaurantsCollection().updateOne(
+      { _id: new ObjectId(req.params.id) },
+      {
+        $set: {
+          ...restaurant,
+          updatedAt: new Date(),
+        },
+      }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ error: 'Restaurant not found.' });
+    }
+
+    res.json({ message: 'Restaurant updated successfully.' });
+  } catch (error) {
+    console.error('Error updating restaurant:', error);
+    res.status(500).json({ error: 'Failed to update restaurant.' });
+  }
+});
+
+app.delete('/api/admin/restaurants/:id', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const result = await restaurantsCollection().deleteOne({
+      _id: new ObjectId(req.params.id),
+    });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: 'Restaurant not found.' });
+    }
+
+    res.json({ message: 'Restaurant deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting restaurant:', error);
+    res.status(500).json({ error: 'Failed to delete restaurant.' });
+  }
+});
+
+//
+// OPTIONAL SEED ROUTE FOR FIRST ADMIN
+// remove or protect later if your instructor wants
+//
+
+app.post('/api/setup/create-admin', async (req, res) => {
+  try {
+    const username = req.body.username?.trim();
+    const password = req.body.password;
+
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username and password are required.' });
+    }
+
+    const existingAdmin = await adminsCollection().findOne({ username });
+
+    if (existingAdmin) {
+      return res.status(409).json({ error: 'Admin already exists.' });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const result = await adminsCollection().insertOne({
+      username,
+      passwordHash,
+      role: 'admin',
+      createdAt: new Date(),
+    });
+
+    res.status(201).json({
+      message: 'Admin created successfully.',
+      insertedId: result.insertedId,
+    });
+  } catch (error) {
+    console.error('Error creating admin:', error);
+    res.status(500).json({ error: 'Failed to create admin.' });
+  }
+});
+
+// ==================== CONTACT / EMAIL ROUTES ====================
+
+app.post('/api/contact', async (req, res) => {
+  const { senderName, senderEmail, subject, message } = req.body;
+
+  try {
+    if (!senderName || !senderEmail || !subject || !message) {
+      return res.status(400).json({ error: 'All fields required' });
+    }
+
+    try {
+      await contactCollection().insertOne({
+        name: senderName,
+        email: senderEmail,
+        subject: subject,
+        message: message,
+        timestamp: new Date(),
+        status: 'received',
+      });
+    } catch (dbError) {
+      console.warn('Database error (continuing anyway):', dbError.message);
+    }
+
+    const mailOptions = {
+      from: process.env.SMTP_FROM,
+      to: process.env.SMTP_USER,
+      subject: `New Contact: ${subject}`,
+      text: `From: ${senderName} (${senderEmail})\n\n${message}`,
+    };
+
+    await transporter.sendMail(mailOptions);
+    res.json({ status: 'success', message: 'Email sent successfully!' });
+  } catch (error) {
+    console.error('Contact endpoint error:', error);
+    res.status(500).json({ error: 'Failed to send email' });
+  }
+});
 
 // ==================== WEBSOCKET & EMAIL HANDLING ====================
+
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
 
@@ -123,35 +401,29 @@ io.on('connection', (socket) => {
     const { senderName, senderEmail, subject, message } = data;
 
     try {
-      // Validate input
       if (!senderName || !senderEmail || !subject || !message) {
         socket.emit('email-status', { status: 'error', message: 'All fields required' });
         return;
       }
 
-      // Try to store message in MongoDB (optional - continues if fails)
       try {
-        const db = client.db('cis486');
-        const contactCollection = db.collection('contact_messages');
-        
-        await contactCollection.insertOne({
+        await contactCollection().insertOne({
           name: senderName,
           email: senderEmail,
           subject: subject,
           message: message,
           timestamp: new Date(),
-          status: 'received'
+          status: 'received',
         });
       } catch (dbError) {
         console.warn('Database error (continuing anyway):', dbError.message);
       }
 
-      // Send email regardless of DB status
       const mailOptions = {
         from: process.env.SMTP_FROM,
         to: process.env.SMTP_USER,
         subject: `New Contact: ${subject}`,
-        text: `From: ${senderName} (${senderEmail})\n\n${message}`
+        text: `From: ${senderName} (${senderEmail})\n\n${message}`,
       };
 
       await transporter.sendMail(mailOptions);
@@ -167,58 +439,18 @@ io.on('connection', (socket) => {
   });
 });
 
-// ==================== REST ENDPOINT (FALLBACK) ====================
-app.post('/api/contact', async (req, res) => {
-  const { senderName, senderEmail, subject, message } = req.body;
-
+async function startServer() {
   try {
-    if (!senderName || !senderEmail || !subject || !message) {
-      return res.status(400).json({ error: 'All fields required' });
-    }
+    await client.connect();
+    console.log('Connected to MongoDB');
 
-    // Try to store message in MongoDB (optional - continues if fails)
-    try {
-      const db = client.db('cis486');
-      const contactCollection = db.collection('contact_messages');
-      
-      await contactCollection.insertOne({
-        name: senderName,
-        email: senderEmail,
-        subject: subject,
-        message: message,
-        timestamp: new Date(),
-        status: 'received'
-      });
-    } catch (dbError) {
-      console.warn('Database error (continuing anyway):', dbError.message);
-    }
-
-    // Send email regardless of DB status
-    const mailOptions = {
-      from: process.env.SMTP_FROM,
-      to: process.env.SMTP_USER,
-      subject: `New Contact: ${subject}`,
-      text: `From: ${senderName} (${senderEmail})\n\n${message}`
-    };
-
-    await transporter.sendMail(mailOptions);
-    res.json({ status: 'success', message: 'Email sent successfully!' });
+    server.listen(PORT, () => {
+      console.log(`Server listening on port ${PORT}`);
+    });
   } catch (error) {
-    console.error('Contact endpoint error:', error);
-    res.status(500).json({ error: 'Failed to send email' });
+    console.error('Failed to start server:', error);
+    process.exit(1);
   }
-});
+}
 
-// ==================== STATIC ROUTE ====================
-app.get('/contact.html', (req, res) => {
-  res.sendFile(join(__dirname, 'public', 'contact.html'));
-});
-
-/*
-👇🏻notice the refactored app.listen:
-no code mods needed but this uses the PORT variable for PaaS deployments
-*/ 
-//start the server. 
-server.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`)
-})
+startServer();
