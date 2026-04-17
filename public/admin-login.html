@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - Florence, AL Music & Dining</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .login-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(108, 92, 231, 0.08), rgba(9, 132, 227, 0.08));
+      padding: 20px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(108, 92, 231, 0.12);
+      padding: 35px 30px;
+    }
+
+    .login-card h1 {
+      color: var(--primary-color);
+      margin-bottom: 10px;
+      text-align: center;
+      font-size: 30px;
+    }
+
+    .login-card p {
+      text-align: center;
+      color: var(--text-light);
+      margin-bottom: 25px;
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .login-form label {
+      font-weight: 600;
+      color: var(--accent-color);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .login-form input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 14px;
+      color: var(--text-dark);
+      background: white;
+    }
+
+    .login-form input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 6px rgba(108, 92, 231, 0.18);
+    }
+
+    .login-btn {
+      border: none;
+      background: var(--primary-color);
+      color: white;
+      padding: 12px 18px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .login-btn:hover {
+      background: var(--accent-color);
+    }
+
+    .login-message {
+      min-height: 22px;
+      margin-top: 8px;
+      font-size: 14px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .login-message.error {
+      color: var(--error-color);
+    }
+
+    .login-message.success {
+      color: var(--success-color);
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 18px;
+      color: var(--text-light);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back-link:hover {
+      color: var(--primary-color);
+    }
+  </style>
+</head>
+<body>
+  <main class="login-wrapper">
+    <section class="login-card">
+      <h1>Admin Login</h1>
+      <p>Authorized administrators only</p>
+
+      <form id="adminLoginForm" class="login-form">
+        <div>
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+
+        <div>
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+
+        <button type="submit" class="login-btn">Log In</button>
+
+        <div id="loginMessage" class="login-message"></div>
+      </form>
+
+      <a href="index.html" class="back-link">Back to site</a>
+    </section>
+  </main>
+
+  <script src="js/admin-login.js"></script>
+</body>
+</html>
