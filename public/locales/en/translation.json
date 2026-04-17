@@ -69,5 +69,42 @@
     "contact": "Get Contact Info",
     "featured": "Featured",
     "liveMusic": "Live Music"
+  },
+  "contact": {
+    "hero": {
+      "title": "Get In Touch",
+      "subtitle": "We'd love to hear from you. Send us a message and we'll respond as soon as possible."
+    },
+    "form": {
+      "title": "Send us a Message",
+      "name": "Name",
+      "namePlaceholder": "Your Name",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "subject": "Subject",
+      "subjectPlaceholder": "What is this about?",
+      "message": "Message",
+      "messagePlaceholder": "Your message here...",
+      "submit": "Send Message"
+    },
+    "status": {
+      "sending": "Sending your message...",
+      "success": "Email sent successfully! We'll get back to you soon.",
+      "error": "Failed to send email. Please try again.",
+      "disconnected": "Connection lost. Please check your internet.",
+      "connectionError": "Unable to connect to server."
+    },
+    "validation": {
+      "required": "This field is required",
+      "invalidEmail": "Please enter a valid email address"
+    },
+    "info": {
+      "title": "Contact Information",
+      "address": "Address",
+      "phone": "Phone",
+      "email": "Email",
+      "hours": "Hours",
+      "daysWeek": "Monday - Sunday"
+    }
   }
 }

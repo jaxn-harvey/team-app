@@ -69,5 +69,42 @@
     "contact": "Obtener Información de Contacto",
     "featured": "Destacado",
     "liveMusic": "Música en Vivo"
+  },
+  "contact": {
+    "hero": {
+      "title": "Ponte en Contacto",
+      "subtitle": "Nos encantaría saber de ti. Envíanos un mensaje y responderemos lo antes posible."
+    },
+    "form": {
+      "title": "Envíanos un Mensaje",
+      "name": "Nombre",
+      "namePlaceholder": "Tu Nombre",
+      "email": "Correo Electrónico",
+      "emailPlaceholder": "tu@correo.com",
+      "subject": "Asunto",
+      "subjectPlaceholder": "¿De qué se trata?",
+      "message": "Mensaje",
+      "messagePlaceholder": "Tu mensaje aquí...",
+      "submit": "Enviar Mensaje"
+    },
+    "status": {
+      "sending": "Enviando tu mensaje...",
+      "success": "¡Correo enviado exitosamente! Nos pondremos en contacto pronto.",
+      "error": "No se pudo enviar el correo. Por favor, intenta de nuevo.",
+      "disconnected": "Conexión perdida. Por favor, verifica tu internet.",
+      "connectionError": "No se puede conectar al servidor."
+    },
+    "validation": {
+      "required": "Este campo es obligatorio",
+      "invalidEmail": "Por favor, ingresa una dirección de correo válida"
+    },
+    "info": {
+      "title": "Información de Contacto",
+      "address": "Dirección",
+      "phone": "Teléfono",
+      "email": "Correo Electrónico",
+      "hours": "Horario",
+      "daysWeek": "Lunes - Domingo"
+    }
   }
 }
