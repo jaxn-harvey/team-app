@@ -23,27 +23,41 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
   submitBtn.disabled = true;
   showStatus('sending', i18next.t('contact.status.sending'));
 
-  // Emit email via WebSocket
+  // Guard against emitting when not connected
+  if (!socket.connected) {
+    submitBtn.disabled = false;
+    showStatus('error', i18next.t('contact.status.connectionError'));
+    return;
+  }
+
+  // Emit email via WebSocket; set a timeout in case the server never responds
+  let responseReceived = false;
+  const sendTimeout = setTimeout(() => {
+    if (!responseReceived) {
+      submitBtn.disabled = false;
+      showStatus('error', i18next.t('contact.status.timeout'));
+    }
+  }, 15000);
+
+  socket.once('email-status', (data) => {
+    responseReceived = true;
+    clearTimeout(sendTimeout);
+    submitBtn.disabled = false;
+
+    if (data.status === 'success') {
+      showStatus('success', i18next.t('contact.status.success'));
+      document.getElementById('contactForm').reset();
+    } else {
+      showStatus('error', data.message || i18next.t('contact.status.error'));
+    }
+  });
+
   socket.emit('send-contact-email', {
     senderName,
     senderEmail,
     subject,
     message
   });
-});
-
-// Listen for email status from server
-socket.on('email-status', (data) => {
-  const submitBtn = document.getElementById('submitBtn');
-  submitBtn.disabled = false;
-
-  if (data.status === 'success') {
-    showStatus('success', i18next.t('contact.status.success'));
-    // Clear form
-    document.getElementById('contactForm').reset();
-  } else if (data.status === 'error') {
-    showStatus('error', data.message || i18next.t('contact.status.error'));
-  }
 });
 
 // Handle WebSocket connection
@@ -53,11 +67,19 @@ socket.on('connect', () => {
 
 socket.on('disconnect', () => {
   console.log('Disconnected from server');
+  const submitBtn = document.getElementById('submitBtn');
+  if (submitBtn && submitBtn.disabled) {
+    submitBtn.disabled = false;
+  }
   showStatus('error', i18next.t('contact.status.disconnected'));
 });
 
 socket.on('connect_error', (error) => {
   console.error('Connection error:', error);
+  const submitBtn = document.getElementById('submitBtn');
+  if (submitBtn && submitBtn.disabled) {
+    submitBtn.disabled = false;
+  }
   showStatus('error', i18next.t('contact.status.connectionError'));
 });
 

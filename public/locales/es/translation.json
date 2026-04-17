@@ -92,7 +92,8 @@
       "success": "¡Correo enviado exitosamente! Nos pondremos en contacto pronto.",
       "error": "No se pudo enviar el correo. Por favor, intenta de nuevo.",
       "disconnected": "Conexión perdida. Por favor, verifica tu internet.",
-      "connectionError": "No se puede conectar al servidor."
+      "connectionError": "No se puede conectar al servidor.",
+      "timeout": "Sin respuesta del servidor. Por favor, intenta de nuevo."
     },
     "validation": {
       "required": "Este campo es obligatorio",
