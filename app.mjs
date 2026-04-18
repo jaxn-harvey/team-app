@@ -22,38 +22,30 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI;
-// CHANGED: JWT_SECRET is still required for token generation
 const JWT_SECRET = process.env.JWT_SECRET;
 const DB_NAME = process.env.DB_NAME || 'shoals_dining_guide';
 
-// CHANGED: MongoDB is now optional - allows local .env credential testing without MongoDB connection
 if (!MONGO_URI) {
-  console.warn('⚠️  MONGO_URI not defined - MongoDB features disabled. Using .env credentials only.');
+  throw new Error('MONGO_URI is not defined in .env');
 }
 
-// CHANGED: JWT_SECRET is still required
 if (!JWT_SECRET) {
   throw new Error('JWT_SECRET is not defined in .env');
 }
 
-// CHANGED: Only create MongoDB client if MONGO_URI is defined
-const client = MONGO_URI ? new MongoClient(MONGO_URI, {
+const client = new MongoClient(MONGO_URI, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
   },
-}) : null;
+});
 
 app.use(express.static(join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// CHANGED: Added null checks for when MongoDB is not connected
 function db() {
-  if (!client) {
-    throw new Error('MongoDB not connected. Add MONGO_URI to .env to enable database features.');
-  }
   return client.db(DB_NAME);
 }
 
@@ -190,50 +182,44 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ error: 'Username and password are required.' });
     }
 
-    // CHANGED: Check .env credentials first (supports local testing without MongoDB)
-    const envAdminUser = process.env.ADMIN_USERNAME;
-    const envAdminPass = process.env.ADMIN_PASSWORD;
+    // Check MongoDB users collection only
+    console.log(`[LOGIN] Attempting login for user: ${username}`);
+    let account = await usersCollection().findOne({ username });
+    console.log(`[LOGIN] Account found:`, !!account);
     
-    if (envAdminUser && envAdminPass && username === envAdminUser && password === envAdminPass) {
-      const token = jwt.sign(
-        {
-          userId: 'env-admin',
-          username: envAdminUser,
-          role: 'admin',
-        },
-        JWT_SECRET,
-        { expiresIn: '2h' }
-      );
-
-      return res.json({
-        message: 'Login successful.',
-        token,
-        role: 'admin',
-      });
-    }
-
-    // CHANGED: Fall back to MongoDB check only if MongoDB is connected
-    if (!client) {
-      return res.status(401).json({ error: 'Invalid credentials. MongoDB not available.' });
-    }
-
-    let account = await adminsCollection().findOne({ username });
-    let role = 'admin';
+    let role = 'user';
 
     if (!account) {
-      account = await usersCollection().findOne({ username });
-      role = 'user';
-    }
-
-    if (!account) {
+      console.log(`[LOGIN] User not found in database`);
       return res.status(401).json({ error: 'Invalid credentials.' });
     }
 
-    const passwordMatch = await bcrypt.compare(password, account.passwordHash);
+    // Check role and password
+    let passwordMatch = false;
+    
+    if (account.passwordHash) {
+      // If passwordHash exists, use bcrypt comparison
+      console.log(`[LOGIN] Comparing bcrypt password`);
+      passwordMatch = await bcrypt.compare(password, account.passwordHash);
+    } else if (account.password) {
+      // Fallback: plain text password comparison (not recommended for production)
+      console.log(`[LOGIN] Comparing plain text password`);
+      passwordMatch = password === account.password;
+    } else {
+      console.log(`[LOGIN] No password field found in document`);
+    }
+
+    console.log(`[LOGIN] Password match:`, passwordMatch);
 
     if (!passwordMatch) {
       return res.status(401).json({ error: 'Invalid credentials.' });
     }
+
+    // Extract role from account if it exists
+    if (account.role) {
+      role = account.role;
+    }
+    console.log(`[LOGIN] Role assigned:`, role);
 
     const token = jwt.sign(
       {
@@ -245,13 +231,14 @@ app.post('/api/auth/login', async (req, res) => {
       { expiresIn: '2h' }
     );
 
+    console.log(`[LOGIN] Login successful for user: ${username}`);
     res.json({
       message: 'Login successful.',
       token,
       role,
     });
   } catch (error) {
-    console.error('Login error:', error);
+    console.error('[LOGIN ERROR]:', error);
     res.status(500).json({ error: 'Login failed.' });
   }
 });
@@ -474,27 +461,13 @@ io.on('connection', (socket) => {
   });
 });
 
-// CHANGED: MongoDB connection is now optional
 async function startServer() {
   try {
-    // CHANGED: Only connect to MongoDB if MONGO_URI is defined
-    if (client) {
-      try {
-        await client.connect();
-        console.log('✓ Connected to MongoDB');
-      } catch (mongoError) {
-        console.warn('⚠️  MongoDB connection failed:', mongoError.message);
-        console.warn('   Running in offline mode - .env credentials only');
-      }
-    } else {
-      console.log('ℹ️  MongoDB disabled - running in local .env credential mode');
-    }
+    await client.connect();
+    console.log('Connected to MongoDB');
 
     server.listen(PORT, () => {
-      console.log(`✓ Server listening on port ${PORT}`);
-      if (process.env.ADMIN_USERNAME) {
-        console.log(`ℹ️  Local admin available: ${process.env.ADMIN_USERNAME} / ${process.env.ADMIN_PASSWORD}`);
-      }
+      console.log(`Server listening on port ${PORT}`);
     });
   } catch (error) {
     console.error('Failed to start server:', error);
