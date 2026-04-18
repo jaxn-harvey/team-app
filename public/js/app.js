@@ -1,131 +1,37 @@
-// ==================== RESTAURANT DATA ====================
-const restaurants = [
-  {
-    id: 1,
-    name: "Swampers",
-    cuisine: "American",
-    description: "Premier dining at Renaissance Shoals Hotel featuring upscale American cuisine and live entertainment. An elegant experience with world-class performances overlooking the Tennessee River.",
-    image: "https://images.unsplash.com/photo-1517457373614-b7152f800bb1?w=400&h=300&fit=crop",
-    address: "10 Hightower Pl, Florence, AL 35630",
-    phone: "(256) 246-7000",
-    hours: "5:00 PM - 11:00 PM",
-    rating: 4.9,
-    reviews: 324,
-    liveMusic: true,
-    musicSchedule: "Nightly performances",
-    featured: true,
-    heritage: "Premier waterfront dining venue",
-    lat: 34.8086927,
-    lng: -87.6307255
-  },
-  {
-    id: 2,
-    name: "FloBama",
-    cuisine: "Casual American",
-    description: "Vibrant bar and restaurant with a stellar reputation for live music and entertainment. Great food, cold drinks, and non-stop musical energy. A modern gathering place for music lovers.",
-    image: "https://images.unsplash.com/photo-1504674900967-da76157f002f?w=400&h=300&fit=crop",
-    address: "311 N Court St, Florence, AL 35630",
-    phone: "(256) 766-2635",
-    hours: "11:00 AM - Late Night",
-    rating: 4.7,
-    reviews: 418,
-    liveMusic: true,
-    musicSchedule: "Thursday-Sunday",
-    heritage: "Popular live music destination",
-    lat: 34.8022223,
-    lng: -87.6777217
-  },
-  {
-    id: 3,
-    name: "Lava Room",
-    cuisine: "Tapas & Small Plates",
-    description: "Contemporary lounge featuring upscale small plates and craft cocktails. Intimate atmosphere with live acoustic performances in a sophisticated setting.",
-    image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
-    address: "313 N Court St, Florence, AL 35630",
-    phone: "(256) 248-5282",
-    hours: "4:00 PM - 11:00 PM",
-    rating: 4.6,
-    reviews: 207,
-    liveMusic: true,
-    musicSchedule: "Weekend nights",
-    heritage: "Upscale lounge with live entertainment",
-    lat: 34.8009232,
-    lng: -87.6773822
-  },
-  {
-    id: 4,
-    name: "Rising Crust",
-    cuisine: "Pizza & Italian",
-    description: "Artisan pizzeria with wood-fired oven and authentic Italian recipes. Casual and welcoming atmosphere where musicians and music fans connect over great food and live performances.",
-    image: "https://images.unsplash.com/photo-1555939594-58d7cb561fcb?w=400&h=300&fit=crop",
-    address: "4136 Florence Blvd, Florence, AL 35634",
-    phone: "(256) 765-5432",
-    hours: "11:00 AM - 10:00 PM",
-    rating: 4.5,
-    reviews: 301,
-    liveMusic: true,
-    musicSchedule: "Friday & Saturday",
-    heritage: "Community pizzeria with live music",
-    lat: 34.8448447,
-    lng: -87.5822045
-  },
-  {
-    id: 5,
-    name: "Champy's Chicken",
-    cuisine: "Soul Food",
-    description: "Authentic Southern soul food restaurant featuring traditional comfort classics prepared with passion and warm hospitality. Occasional live music and community-focused gatherings.",
-    image: "https://images.unsplash.com/photo-1567521464027-f127ff144326?w=400&h=300&fit=crop",
-    address: "120 E 2nd St, Muscle Shoals, AL 35661",
-    phone: "(256) 764-2898",
-    hours: "10:30 AM - 9:00 PM",
-    rating: 4.4,
-    reviews: 189,
-    liveMusic: false,
-    musicSchedule: "Live Music Events Monthly",
-    heritage: "Traditional soul food establishment",
-    lat: 34.7592979,
-    lng: -87.6766439
-  },
-  {
-    id: 6,
-    name: "Rattlesnake Saloon",
-    cuisine: "Barbecue & Casual",
-    description: "Historic live music venue in a rustic building with authentic charm. BBQ and casual fare alongside some of the best live performances in the area. A true temple of local entertainment.",
-    image: "https://images.unsplash.com/photo-1502641192624-92c51f59c46d?w=400&h=300&fit=crop",
-    address: "1292 Mount Mills Rd, Tuscumbia, AL 35674",
-    phone: "(256) 759-9800",
-    hours: "11:00 AM - Midnight",
-    rating: 4.7,
-    reviews: 412,
-    liveMusic: true,
-    musicSchedule: "Thursday-Sunday",
-    heritage: "Iconic live venue",
-    lat: 34.6486699,
-    lng: -87.9067437
-  },
-  {
-    id: 7,
-    name: "Renaissance Shoals Restaurant",
-    cuisine: "American Fine Dining",
-    description: "Elegant fine dining at Renaissance Shoals Hotel with views of the Tennessee River. Premium cuisine and upscale entertainment in a sophisticated setting.",
-    image: "https://images.unsplash.com/photo-1479623433602-84df5ce71d06?w=400&h=300&fit=crop",
-    address: "10 Hightower Pl, Florence, AL 35630",
-    phone: "(256) 246-7000",
-    hours: "6:00 PM - 10:00 PM",
-    rating: 4.8,
-    reviews: 267,
-    liveMusic: true,
-    musicSchedule: "Select evening events",
-    heritage: "Fine dining on the Tennessee River",
-    lat: 34.8086927,
-    lng: -87.6307255
+// ==================== RESTAURANT DATA FROM API ====================
+async function fetchRestaurants() {
+  try {
+    console.log('[FETCH] Fetching restaurants from API...');
+    const res = await fetch('/api/restaurants');
+    if (res.ok) {
+      const data = await res.json();
+      console.log(`[FETCH] Successfully fetched ${data.length} restaurants from API`);
+      if (data && data.length > 0) {
+        return data;
+      } else {
+        console.warn('[FETCH] API returned empty array');
+      }
+    } else {
+      console.error(`[FETCH] API returned status ${res.status}`);
+    }
+  } catch (error) {
+    console.error('[FETCH ERROR]:', error);
   }
-];
+  console.warn('[FETCH] Returning empty array');
+  return [];
+}
 
 // ==================== MAP INITIALIZATION ====================
-function initializeMap() {
+async function initializeMap() {
   const mapElement = document.getElementById('map');
   if (!mapElement) return;
+
+  // Fetch restaurants from database
+  const restaurants = await fetchRestaurants();
+  if (!restaurants || restaurants.length === 0) {
+    console.warn('No restaurants available for map');
+    return;
+  }
 
   // Center of Shoals region (covers Florence, Muscle Shoals, Tuscumbia)
   const shoalsCenter = [34.7800, -87.7200];
@@ -147,13 +53,14 @@ function initializeMap() {
     
     const marker = L.marker(coordinates).addTo(map);
     
+    const restaurantId = restaurant._id || restaurant.id;
     const popupContent = `
       <div class="map-popup">
         <h4>${musicIcon} ${restaurant.name}</h4>
         <p><strong>Cuisine:</strong> ${restaurant.cuisine}</p>
         <p><strong>Rating:</strong> ${restaurant.rating}</p>
         ${restaurant.liveMusic ? `<p><strong style="color: #0984e3;">Live Music</strong></p>` : ''}
-        <a href="restaurants.html#restaurant-${restaurant.id}" class="popup-link">View Details</a>
+        <a href="restaurants.html#restaurant-${restaurantId}" class="popup-link">View Details</a>
       </div>
     `;
     
@@ -162,17 +69,32 @@ function initializeMap() {
 }
 
 // ==================== RESTAURANT CARDS (HOME PAGE) ====================
-function displayFeaturedRestaurants() {
+async function displayFeaturedRestaurants() {
   const grid = document.getElementById('restaurantsGrid');
   if (!grid) return;
 
-  // Get Swampers first, then other featured/top rated restaurants
-  const swampers = restaurants.find(r => r.id === 1);
-  const others = restaurants.filter(r => r.id !== 1).slice(0, 2);
-  const featured = [swampers, ...others];
+  // Fetch restaurants from database
+  const restaurants = await fetchRestaurants();
+  if (!restaurants || restaurants.length === 0) {
+    console.warn('No restaurants available');
+    return;
+  }
 
-  grid.innerHTML = featured.map(restaurant => `
-    <div class="restaurant-card" onclick="goToRestaurantDetail(${restaurant.id})">
+  // Get featured and top rated restaurants
+  const featured = restaurants
+    .filter(r => r.featured)
+    .sort((a, b) => b.rating - a.rating)
+    .slice(0, 3);
+
+  if (featured.length === 0 && restaurants.length > 0) {
+    // If no featured restaurants, show top 3 rated
+    featured.push(...restaurants.sort((a, b) => b.rating - a.rating).slice(0, 3));
+  }
+
+  grid.innerHTML = featured.map(restaurant => {
+    const restaurantId = restaurant._id || restaurant.id;
+    return `
+    <div class="restaurant-card" onclick="goToRestaurantDetail('${restaurantId}')">
       <img src="${restaurant.image}" alt="${restaurant.name}" class="restaurant-image">
       <div class="restaurant-info">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
@@ -185,7 +107,8 @@ function displayFeaturedRestaurants() {
         <div class="restaurant-rating">${restaurant.rating} (${restaurant.reviews} reviews)</div>
       </div>
     </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 // ==================== RESTAURANT LIST (DETAIL PAGE) ====================
@@ -195,19 +118,12 @@ async function displayRestaurantsList() {
 
   const token = localStorage.getItem('token');
   
-  let restaurantsToDisplay = restaurants;
+  // Fetch restaurants from database only
+  const restaurantsToDisplay = await fetchRestaurants();
   
-  // Try to fetch from API first (database)
-  try {
-    const res = await fetch('/api/restaurants');
-    if (res.ok) {
-      const data = await res.json();
-      if (data && data.length > 0) {
-        restaurantsToDisplay = data;
-      }
-    }
-  } catch (error) {
-    console.warn('Could not fetch restaurants from API, using local data', error);
+  if (!restaurantsToDisplay || restaurantsToDisplay.length === 0) {
+    listContainer.innerHTML = '<p>No restaurants available at this time.</p>';
+    return;
   }
 
   listContainer.innerHTML = restaurantsToDisplay.map(restaurant => {
@@ -222,7 +138,6 @@ async function displayRestaurantsList() {
           <span class="restaurant-cuisine-tag">${restaurant.cuisine}</span>
           ${restaurant.liveMusic ? '<span class="live-music-badge">Live Music</span>' : ''}
         </div>
-        ${restaurant.heritage ? `<div class="heritage-label">${restaurant.heritage}</div>` : ''}
         <div class="restaurant-details">
           <div class="detail-row">
             <span class="detail-label">Address:</span>
@@ -236,10 +151,7 @@ async function displayRestaurantsList() {
             <span class="detail-label">Hours:</span>
             <span>${restaurant.hours}</span>
           </div>
-          ${restaurant.liveMusic ? `<div class="detail-row">
-            <span class="detail-label">Music Schedule:</span>
-            <span>${restaurant.musicSchedule}</span>
-          </div>` : ''}
+          ${restaurant.liveMusic ? '<div class="detail-row"><span class="detail-label">Music Schedule:</span><span>' + restaurant.musicSchedule + '</span></div>' : ''}
         </div>
         <p class="restaurant-description">${restaurant.description}</p>
         <div class="restaurant-rating">${restaurant.rating} (${restaurant.reviews} reviews)</div>
@@ -247,11 +159,12 @@ async function displayRestaurantsList() {
           <button class="btn-learn-more" onclick="alert('Contact ${restaurant.name}:\\n${restaurant.phone}\\n\\nHours: ${restaurant.hours}')">
             Contact
           </button>
-          ${token ? `<button class="btn-delete" onclick="deleteRestaurantCard('${restaurantId}')" style="background: #d32f2f; color: white; border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer;">Delete</button>` : ''}
+          ${token ? '<button class="btn-delete" onclick="deleteRestaurantCard(\'' + restaurantId + '\')" style="background: #d32f2f; color: white; border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer;">Delete</button>' : ''}
         </div>
       </div>
     </div>
-  `; }).join('');
+    `;
+  }).join('');
 
   // Scroll to restaurant if anchor is present in URL
   setTimeout(() => {
@@ -377,17 +290,19 @@ async function deleteRestaurantCard(restaurantId) {
 }
 
 // ==================== INITIALIZATION ====================
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   setupHamburgerMenu();
   
   // Initialize based on page
   const path = window.location.pathname;
   
   if (path.includes('index.html') || path.endsWith('/')) {
-    initializeMap();
-    displayFeaturedRestaurants();
+    console.log('[INIT] Home page - initializing map and featured restaurants');
+    await initializeMap();
+    await displayFeaturedRestaurants();
   } else if (path.includes('restaurants.html')) {
-    displayRestaurantsList();
+    console.log('[INIT] Restaurants page - loading restaurant list');
+    await displayRestaurantsList();
     setupFilters();
   }
 });

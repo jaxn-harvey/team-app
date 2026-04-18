@@ -143,10 +143,12 @@ app.get('/', (req, res) => {
 
 app.get('/api/restaurants', async (req, res) => {
   try {
+    console.log('[API] GET /api/restaurants - fetching restaurants...');
     const restaurants = await restaurantsCollection().find({}).toArray();
+    console.log(`[API] Successfully retrieved ${restaurants.length} restaurants`);
     res.json(restaurants);
   } catch (error) {
-    console.error('Error fetching restaurants:', error);
+    console.error('[API ERROR] Error fetching restaurants:', error);
     res.status(500).json({ error: 'Failed to fetch restaurants.' });
   }
 });
