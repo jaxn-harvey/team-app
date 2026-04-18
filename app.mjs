@@ -22,30 +22,38 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI;
+// CHANGED: JWT_SECRET is still required for token generation
 const JWT_SECRET = process.env.JWT_SECRET;
 const DB_NAME = process.env.DB_NAME || 'shoals_dining_guide';
 
+// CHANGED: MongoDB is now optional - allows local .env credential testing without MongoDB connection
 if (!MONGO_URI) {
-  throw new Error('MONGO_URI is not defined in .env');
+  console.warn('⚠️  MONGO_URI not defined - MongoDB features disabled. Using .env credentials only.');
 }
 
+// CHANGED: JWT_SECRET is still required
 if (!JWT_SECRET) {
   throw new Error('JWT_SECRET is not defined in .env');
 }
 
-const client = new MongoClient(MONGO_URI, {
+// CHANGED: Only create MongoDB client if MONGO_URI is defined
+const client = MONGO_URI ? new MongoClient(MONGO_URI, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
   },
-});
+}) : null;
 
 app.use(express.static(join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// CHANGED: Added null checks for when MongoDB is not connected
 function db() {
+  if (!client) {
+    throw new Error('MongoDB not connected. Add MONGO_URI to .env to enable database features.');
+  }
   return client.db(DB_NAME);
 }
 
@@ -180,6 +188,33 @@ app.post('/api/auth/login', async (req, res) => {
 
     if (!username || !password) {
       return res.status(400).json({ error: 'Username and password are required.' });
+    }
+
+    // CHANGED: Check .env credentials first (supports local testing without MongoDB)
+    const envAdminUser = process.env.ADMIN_USERNAME;
+    const envAdminPass = process.env.ADMIN_PASSWORD;
+    
+    if (envAdminUser && envAdminPass && username === envAdminUser && password === envAdminPass) {
+      const token = jwt.sign(
+        {
+          userId: 'env-admin',
+          username: envAdminUser,
+          role: 'admin',
+        },
+        JWT_SECRET,
+        { expiresIn: '2h' }
+      );
+
+      return res.json({
+        message: 'Login successful.',
+        token,
+        role: 'admin',
+      });
+    }
+
+    // CHANGED: Fall back to MongoDB check only if MongoDB is connected
+    if (!client) {
+      return res.status(401).json({ error: 'Invalid credentials. MongoDB not available.' });
     }
 
     let account = await adminsCollection().findOne({ username });
@@ -439,13 +474,27 @@ io.on('connection', (socket) => {
   });
 });
 
+// CHANGED: MongoDB connection is now optional
 async function startServer() {
   try {
-    await client.connect();
-    console.log('Connected to MongoDB');
+    // CHANGED: Only connect to MongoDB if MONGO_URI is defined
+    if (client) {
+      try {
+        await client.connect();
+        console.log('✓ Connected to MongoDB');
+      } catch (mongoError) {
+        console.warn('⚠️  MongoDB connection failed:', mongoError.message);
+        console.warn('   Running in offline mode - .env credentials only');
+      }
+    } else {
+      console.log('ℹ️  MongoDB disabled - running in local .env credential mode');
+    }
 
     server.listen(PORT, () => {
-      console.log(`Server listening on port ${PORT}`);
+      console.log(`✓ Server listening on port ${PORT}`);
+      if (process.env.ADMIN_USERNAME) {
+        console.log(`ℹ️  Local admin available: ${process.env.ADMIN_USERNAME} / ${process.env.ADMIN_PASSWORD}`);
+      }
     });
   } catch (error) {
     console.error('Failed to start server:', error);

@@ -41,7 +41,7 @@ form.addEventListener('submit', async (event) => {
     messageBox.classList.add('success');
 
     setTimeout(() => {
-      window.location.href = 'admin-dashboard.html';
+      window.location.href = 'restaurants.html';
     }, 800);
   } catch (error) {
     console.error('Login error:', error);

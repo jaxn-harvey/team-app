@@ -189,46 +189,69 @@ function displayFeaturedRestaurants() {
 }
 
 // ==================== RESTAURANT LIST (DETAIL PAGE) ====================
-function displayRestaurantsList() {
+async function displayRestaurantsList() {
   const listContainer = document.getElementById('restaurantsList');
   if (!listContainer) return;
 
-  listContainer.innerHTML = restaurants.map(restaurant => `
-    <div id="restaurant-${restaurant.id}" class="restaurant-item" data-cuisine="${restaurant.cuisine}" data-name="${restaurant.name.toLowerCase()}" data-id="${restaurant.id}">
+  const token = localStorage.getItem('token');
+  
+  let restaurantsToDisplay = restaurants;
+  
+  // Try to fetch from API first (database)
+  try {
+    const res = await fetch('/api/restaurants');
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.length > 0) {
+        restaurantsToDisplay = data;
+      }
+    }
+  } catch (error) {
+    console.warn('Could not fetch restaurants from API, using local data', error);
+  }
+
+  listContainer.innerHTML = restaurantsToDisplay.map(restaurant => {
+    // Handle both local ID format (id) and MongoDB format (_id)
+    const restaurantId = restaurant._id || restaurant.id;
+    return `
+    <div id="restaurant-${restaurantId}" class="restaurant-item" data-cuisine="${restaurant.cuisine}" data-name="${restaurant.name.toLowerCase()}" data-id="${restaurantId}" data-livemusic="${restaurant.liveMusic ? 'true' : 'false'}">
       <img src="${restaurant.image}" alt="${restaurant.name}" class="restaurant-item-image">
       <div class="restaurant-item-content">
         <div class="restaurant-item-header">
-          <h3>${restaurant.name}${restaurant.featured ? ' - ' + i18next.t('restaurants.featured') : ''}</h3>
+          <h3>${restaurant.name}${restaurant.featured ? ' - Featured' : ''}</h3>
           <span class="restaurant-cuisine-tag">${restaurant.cuisine}</span>
-          ${restaurant.liveMusic ? '<span class="live-music-badge">' + i18next.t('restaurants.liveMusic') + '</span>' : ''}
+          ${restaurant.liveMusic ? '<span class="live-music-badge">Live Music</span>' : ''}
         </div>
         ${restaurant.heritage ? `<div class="heritage-label">${restaurant.heritage}</div>` : ''}
         <div class="restaurant-details">
           <div class="detail-row">
-            <span class="detail-label">${i18next.t('restaurants.address')}:</span>
+            <span class="detail-label">Address:</span>
             <span>${restaurant.address}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">${i18next.t('restaurants.phone')}:</span>
+            <span class="detail-label">Phone:</span>
             <span>${restaurant.phone}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">${i18next.t('restaurants.hours')}:</span>
+            <span class="detail-label">Hours:</span>
             <span>${restaurant.hours}</span>
           </div>
           ${restaurant.liveMusic ? `<div class="detail-row">
-            <span class="detail-label">${i18next.t('restaurants.music')}:</span>
+            <span class="detail-label">Music Schedule:</span>
             <span>${restaurant.musicSchedule}</span>
           </div>` : ''}
         </div>
         <p class="restaurant-description">${restaurant.description}</p>
         <div class="restaurant-rating">${restaurant.rating} (${restaurant.reviews} reviews)</div>
-        <button class="btn-learn-more" onclick="alert('Contact ${restaurant.name}:\\n${restaurant.phone}\\n\\n${i18next.t('restaurants.hours')}: ${restaurant.hours}')">
-          ${i18next.t('restaurants.contact')}
-        </button>
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+          <button class="btn-learn-more" onclick="alert('Contact ${restaurant.name}:\\n${restaurant.phone}\\n\\nHours: ${restaurant.hours}')">
+            Contact
+          </button>
+          ${token ? `<button class="btn-delete" onclick="deleteRestaurantCard('${restaurantId}')" style="background: #d32f2f; color: white; border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer;">Delete</button>` : ''}
+        </div>
       </div>
     </div>
-  `).join('');
+  `; }).join('');
 
   // Scroll to restaurant if anchor is present in URL
   setTimeout(() => {
@@ -267,26 +290,39 @@ function setupHamburgerMenu() {
 function setupFilters() {
   const searchInput = document.getElementById('searchInput');
   const cuisineFilter = document.getElementById('cuisineFilter');
+  const liveMusicFilter = document.getElementById('liveMusicFilter');
 
   if (!searchInput || !cuisineFilter) return;
 
   function applyFilters() {
     const searchTerm = searchInput.value.toLowerCase();
     const cuisineValue = cuisineFilter.value;
+    const liveMusicOnly = liveMusicFilter ? liveMusicFilter.checked : false;
 
     document.querySelectorAll('.restaurant-item').forEach(item => {
       const name = item.dataset.name;
       const cuisine = item.dataset.cuisine;
+      const liveMusic = item.dataset.livemusic;
 
-      const matchesSearch = name.includes(searchTerm);
+      // Search by name, cuisine, or live music
+      const matchesSearch = 
+        name.includes(searchTerm) || 
+        cuisine.toLowerCase().includes(searchTerm) || 
+        (searchTerm.includes('live') && liveMusic === 'true') ||
+        (searchTerm.includes('music') && liveMusic === 'true');
+      
       const matchesCuisine = !cuisineValue || cuisine === cuisineValue;
+      const matchesLiveMusic = !liveMusicOnly || liveMusic === 'true';
 
-      item.style.display = (matchesSearch && matchesCuisine) ? 'flex' : 'none';
+      item.style.display = (matchesSearch && matchesCuisine && matchesLiveMusic) ? 'flex' : 'none';
     });
   }
 
   searchInput.addEventListener('input', applyFilters);
   cuisineFilter.addEventListener('change', applyFilters);
+  if (liveMusicFilter) {
+    liveMusicFilter.addEventListener('change', applyFilters);
+  }
 }
 
 // ==================== HELPER FUNCTIONS ====================
@@ -301,6 +337,43 @@ function scrollToRestaurant(restaurantId) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, 300);
+}
+
+// Delete restaurant from public view (for admins)
+async function deleteRestaurantCard(restaurantId) {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('You must be logged in as an admin to delete restaurants');
+    return;
+  }
+
+  if (!confirm('Are you sure you want to delete this restaurant?')) {
+    return;
+  }
+
+  try {
+    // If it looks like a MongoDB ID (contains alphanumeric and hyphens), use it directly
+    // Otherwise, it's a local ID and we need to handle it differently
+    const url = `/api/admin/restaurants/${restaurantId}`;
+    
+    const res = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    if (res.ok) {
+      alert('Restaurant deleted successfully!');
+      location.reload();
+    } else {
+      const error = await res.json();
+      alert('Error: ' + (error.error || 'Failed to delete restaurant'));
+    }
+  } catch (error) {
+    console.error('Error deleting restaurant:', error);
+    alert('Failed to delete restaurant');
+  }
 }
 
 // ==================== INITIALIZATION ====================
