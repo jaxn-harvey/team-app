@@ -37,4 +37,5 @@ ssh -i student-key bcumbie@104.197.121.101
 
 ## Dev site on [Render](https://team-app-3m8u.onrender.com/)
 
----
+<img width="500" height="500" alt="GitIcon" src="https://github.com/user-attachments/assets/9643ff2d-72d0-4fc0-b648-a3bcfa2a4bbc" />
+
