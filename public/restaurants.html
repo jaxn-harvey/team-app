@@ -50,7 +50,7 @@
 
   <!-- Hero Section -->
   <section class="hero">
-    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1200&h=400&fit=crop" alt="Restaurant and music venue">
+    <img src="/images/restaurants/downtown_florence_3_billingsley_photography.jpg" alt="Florence, Alabama aerial view at sunset">
     <div class="hero-overlay">
       <h2 data-i18n="restaurants.hero.title">All Restaurants & Music Venues</h2>
       <p data-i18n="restaurants.hero.subtitle">Experience Florence's finest dining and live music</p>
@@ -154,8 +154,9 @@
                 </select>
               </div>
               <div>
-                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Image URL</label>
-                <input type="url" id="adminImage" placeholder="Image URL" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Restaurant Image *</label>
+                <input type="file" id="adminImage" accept="image/*" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                <small style="display: block; margin-top: 5px; color: #666;">Upload a JPG, PNG, or other image (max 5MB)</small>
               </div>
             </div>
 
@@ -263,6 +264,222 @@
       </div>
     </div>
   </section>
+
+  <!-- EDIT RESTAURANT MODAL -->
+  <div id="editRestaurantModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; overflow-y: auto;">
+    <div style="background: white; margin: 20px auto; padding: 30px; border-radius: 8px; max-width: 600px; max-height: 90vh; overflow-y: auto;">
+      <h2 style="color: #8B4513; margin-top: 0;">Edit Restaurant</h2>
+      <span class="close" onclick="closeEditModal()" style="float: right; font-size: 28px; font-weight: bold; cursor: pointer; color: #999;">&times;</span>
+      
+      <form id="editRestaurantForm">
+        <input type="hidden" id="editRestaurantId">
+        
+        <h3 style="color: #8B4513;">Basic Information</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+          <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Restaurant Name *</label>
+            <input type="text" id="editName" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Cuisine Type *</label>
+            <select id="editCuisine" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+              <option value="">-- Select Cuisine --</option>
+              <option value="American">American</option>
+              <option value="Casual American">Casual American</option>
+              <option value="Soul Food">Soul Food</option>
+              <option value="Barbecue & Casual">Barbecue & Casual</option>
+              <option value="Pizza & Italian">Pizza & Italian</option>
+              <option value="Tapas & Small Plates">Tapas & Small Plates</option>
+              <option value="American Fine Dining">American Fine Dining</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+          <label style="display: block; margin-bottom: 5px; font-weight: bold;">Address *</label>
+          <input type="text" id="editAddress" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+          <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Phone</label>
+            <input type="tel" id="editPhone" pattern="[0-9\-\(\)\s]*" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Update Image (optional)</label>
+            <input type="file" id="editImage" accept="image/*" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+          <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Opening Time</label>
+            <select id="editOpeningTime" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+              <option value="">-- Select Opening Time --</option>
+              <option value="12:00 AM">12:00 AM</option>
+              <option value="1:00 AM">1:00 AM</option>
+              <option value="2:00 AM">2:00 AM</option>
+              <option value="3:00 AM">3:00 AM</option>
+              <option value="4:00 AM">4:00 AM</option>
+              <option value="5:00 AM">5:00 AM</option>
+              <option value="6:00 AM">6:00 AM</option>
+              <option value="7:00 AM">7:00 AM</option>
+              <option value="8:00 AM">8:00 AM</option>
+              <option value="9:00 AM">9:00 AM</option>
+              <option value="10:00 AM">10:00 AM</option>
+              <option value="11:00 AM">11:00 AM</option>
+              <option value="12:00 PM">12:00 PM</option>
+              <option value="1:00 PM">1:00 PM</option>
+              <option value="2:00 PM">2:00 PM</option>
+              <option value="3:00 PM">3:00 PM</option>
+              <option value="4:00 PM">4:00 PM</option>
+              <option value="5:00 PM">5:00 PM</option>
+              <option value="6:00 PM">6:00 PM</option>
+              <option value="7:00 PM">7:00 PM</option>
+              <option value="8:00 PM">8:00 PM</option>
+              <option value="9:00 PM">9:00 PM</option>
+              <option value="10:00 PM">10:00 PM</option>
+              <option value="11:00 PM">11:00 PM</option>
+            </select>
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Closing Time</label>
+            <select id="editClosingTime" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+              <option value="">-- Select Closing Time --</option>
+              <option value="12:00 AM">12:00 AM</option>
+              <option value="1:00 AM">1:00 AM</option>
+              <option value="2:00 AM">2:00 AM</option>
+              <option value="3:00 AM">3:00 AM</option>
+              <option value="4:00 AM">4:00 AM</option>
+              <option value="5:00 AM">5:00 AM</option>
+              <option value="6:00 AM">6:00 AM</option>
+              <option value="7:00 AM">7:00 AM</option>
+              <option value="8:00 AM">8:00 AM</option>
+              <option value="9:00 AM">9:00 AM</option>
+              <option value="10:00 AM">10:00 AM</option>
+              <option value="11:00 AM">11:00 AM</option>
+              <option value="12:00 PM">12:00 PM</option>
+              <option value="1:00 PM">1:00 PM</option>
+              <option value="2:00 PM">2:00 PM</option>
+              <option value="3:00 PM">3:00 PM</option>
+              <option value="4:00 PM">4:00 PM</option>
+              <option value="5:00 PM">5:00 PM</option>
+              <option value="6:00 PM">6:00 PM</option>
+              <option value="7:00 PM">7:00 PM</option>
+              <option value="8:00 PM">8:00 PM</option>
+              <option value="9:00 PM">9:00 PM</option>
+              <option value="10:00 PM">10:00 PM</option>
+              <option value="11:00 PM">11:00 PM</option>
+            </select>
+          </div>
+        </div>
+
+        <h3 style="color: #8B4513;">Description & Details</h3>
+        <div style="margin-bottom: 15px;">
+          <label style="display: block; margin-bottom: 5px; font-weight: bold;">Description *</label>
+          <textarea id="editDescription" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; min-height: 80px; box-sizing: border-box;"></textarea>
+        </div>
+
+        <h3 style="color: #8B4513;">Ratings & Reviews</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+          <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Rating (0-5)</label>
+            <input type="number" id="editRating" step="0.1" min="0" max="5" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Number of Reviews</label>
+            <input type="number" id="editReviews" min="0" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+          </div>
+        </div>
+
+        <h3 style="color: #8B4513;">Location (Map Coordinates)</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+          <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Latitude</label>
+            <input type="text" id="editLat" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Longitude</label>
+            <input type="text" id="editLng" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+          </div>
+        </div>
+
+        <h3 style="color: #8B4513;">Features</h3>
+        <div style="margin-bottom: 15px;">
+          <label style="margin-right: 30px; display: inline-block;">
+            <input type="checkbox" id="editLiveMusic"> <strong>Live Music Venue</strong>
+          </label>
+          <label style="display: inline-block;">
+            <input type="checkbox" id="editFeatured"> <strong>Featured Restaurant</strong>
+          </label>
+        </div>
+
+        <div id="editMusicScheduleField" style="margin-bottom: 15px; display: none;">
+          <h3 style="color: #8B4513; margin-top: 10px;">Music Schedule</h3>
+          <div style="display: grid; grid-template-columns: auto 1fr; gap: 20px;">
+            <div>
+              <label style="display: block; margin-bottom: 10px; font-weight: bold;">Days</label>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                  <input type="checkbox" name="editMusicDays" value="Monday" style="margin-right: 8px;"> Monday
+                </label>
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                  <input type="checkbox" name="editMusicDays" value="Tuesday" style="margin-right: 8px;"> Tuesday
+                </label>
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                  <input type="checkbox" name="editMusicDays" value="Wednesday" style="margin-right: 8px;"> Wednesday
+                </label>
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                  <input type="checkbox" name="editMusicDays" value="Thursday" style="margin-right: 8px;"> Thursday
+                </label>
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                  <input type="checkbox" name="editMusicDays" value="Friday" style="margin-right: 8px;"> Friday
+                </label>
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                  <input type="checkbox" name="editMusicDays" value="Saturday" style="margin-right: 8px;"> Saturday
+                </label>
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                  <input type="checkbox" name="editMusicDays" value="Sunday" style="margin-right: 8px;"> Sunday
+                </label>
+              </div>
+            </div>
+            <div>
+              <label style="display: block; margin-bottom: 10px; font-weight: bold;">Time Range</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div>
+                  <select id="editMusicStartTime" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                    <option value="">-- Start Time --</option>
+                    <option value="5:00 PM">5:00 PM</option>
+                    <option value="6:00 PM">6:00 PM</option>
+                    <option value="7:00 PM">7:00 PM</option>
+                    <option value="8:00 PM">8:00 PM</option>
+                    <option value="9:00 PM">9:00 PM</option>
+                    <option value="10:00 PM">10:00 PM</option>
+                  </select>
+                </div>
+                <div>
+                  <select id="editMusicEndTime" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                    <option value="">-- End Time --</option>
+                    <option value="9:00 PM">9:00 PM</option>
+                    <option value="10:00 PM">10:00 PM</option>
+                    <option value="11:00 PM">11:00 PM</option>
+                    <option value="12:00 AM">12:00 AM</option>
+                    <option value="1:00 AM">1:00 AM</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <button type="submit" style="background: #8B4513; color: white; border: none; padding: 12px 24px; border-radius: 4px; cursor: pointer; font-size: 1em; font-weight: bold; flex: 1;">Save Changes</button>
+          <button type="button" onclick="closeEditModal()" style="background: #999; color: white; border: none; padding: 12px 24px; border-radius: 4px; cursor: pointer; font-size: 1em;">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Main Content -->
   <main class="main-content">

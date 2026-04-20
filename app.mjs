@@ -8,17 +8,40 @@ import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import { MongoClient, ServerApiVersion, ObjectId } from 'mongodb';
 import nodemailer from 'nodemailer';
+import multer from 'multer';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const app = express();
 const server = createServer(app);
+
+// Multer configuration for image uploads
+const storage = multer.diskStorage({
+  destination: join(__dirname, 'public', 'images', 'restaurants'),
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + '-' + file.originalname);
+  }
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'));
+    }
+  }
+});
+
 const io = new SocketIOServer(server, {
   cors: {
     origin: '*',
     methods: ['GET', 'POST'],
   },
 });
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI;
@@ -264,6 +287,25 @@ app.get('/api/admin/restaurants', authenticateToken, requireAdmin, async (req, r
   } catch (error) {
     console.error('Error fetching admin restaurants:', error);
     res.status(500).json({ error: 'Failed to fetch restaurants.' });
+  }
+});
+
+// File upload endpoint for restaurant images
+app.post('/api/upload/restaurant-image', authenticateToken, requireAdmin, upload.single('image'), (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image file provided' });
+    }
+
+    console.log('[UPLOAD] Image uploaded successfully:', req.file.filename);
+    res.json({
+      success: true,
+      filename: req.file.filename,
+      message: 'Image uploaded successfully'
+    });
+  } catch (error) {
+    console.error('[UPLOAD ERROR]:', error);
+    res.status(500).json({ error: 'Failed to upload image' });
   }
 });
 

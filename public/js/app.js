@@ -21,6 +21,20 @@ async function fetchRestaurants() {
   return [];
 }
 
+// ==================== IMAGE URL BUILDER ====================
+function getImageUrl(imageData) {
+  // If it's a base64 string (starts with data:), return as-is
+  if (imageData && imageData.startsWith('data:')) {
+    return imageData;
+  }
+  // If it's a full URL (starts with http), return as-is
+  if (imageData && imageData.startsWith('http')) {
+    return imageData;
+  }
+  // Otherwise, return placeholder
+  return 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23ddd%22 width=%22200%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2216%22 fill=%22%23999%22%3ENo Image%3C/text%3E%3C/svg%3E';
+}
+
 // ==================== MAP INITIALIZATION ====================
 async function initializeMap() {
   const mapElement = document.getElementById('map');
@@ -95,7 +109,7 @@ async function displayFeaturedRestaurants() {
     const restaurantId = restaurant._id || restaurant.id;
     return `
     <div class="restaurant-card" onclick="goToRestaurantDetail('${restaurantId}')">
-      <img src="${restaurant.image}" alt="${restaurant.name}" class="restaurant-image">
+      <img src="${getImageUrl(restaurant.image)}" alt="${restaurant.name}" class="restaurant-image">
       <div class="restaurant-info">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
           <h3>${restaurant.name}</h3>
@@ -131,7 +145,7 @@ async function displayRestaurantsList() {
     const restaurantId = restaurant._id || restaurant.id;
     return `
     <div id="restaurant-${restaurantId}" class="restaurant-item" data-cuisine="${restaurant.cuisine}" data-name="${restaurant.name.toLowerCase()}" data-id="${restaurantId}" data-livemusic="${restaurant.liveMusic ? 'true' : 'false'}">
-      <img src="${restaurant.image}" alt="${restaurant.name}" class="restaurant-item-image">
+      <img src="${getImageUrl(restaurant.image)}" alt="${restaurant.name}" class="restaurant-item-image">
       <div class="restaurant-item-content">
         <div class="restaurant-item-header">
           <h3>${restaurant.name}${restaurant.featured ? ' - Featured' : ''}</h3>
@@ -159,7 +173,8 @@ async function displayRestaurantsList() {
           <button class="btn-learn-more" onclick="alert('Contact ${restaurant.name}:\\n${restaurant.phone}\\n\\nHours: ${restaurant.hours}')">
             Contact
           </button>
-          ${token ? '<button class="btn-delete" onclick="deleteRestaurantCard(\'' + restaurantId + '\')" style="background: #d32f2f; color: white; border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer;">Delete</button>' : ''}
+          ${token ? '<button class="btn-edit" onclick="openEditRestaurantModal(\'' + restaurantId + '\')" style="background: #2196F3; color: white; border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer;">Edit</button>' : ''}
+          ${token ? '<button class="btn-delete" onclick="deleteRestaurant(\'' + restaurantId + '\', \'' + restaurant.name + '\')" style="background: #d32f2f; color: white; border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer;">Delete</button>' : ''}
         </div>
       </div>
     </div>
