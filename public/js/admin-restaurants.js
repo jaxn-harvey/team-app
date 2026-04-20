@@ -122,8 +122,8 @@ async function handleCreateRestaurant(e) {
       liveMusic: document.getElementById('adminLiveMusic').checked,
       musicSchedule: musicSchedule,
       featured: document.getElementById('adminFeatured').checked,
-      lat: document.getElementById('adminLat').value || 0,
-      lng: document.getElementById('adminLng').value || 0
+      lat: parseFloat(document.getElementById('adminLat').value) || 34.7817,
+      lng: parseFloat(document.getElementById('adminLng').value) || -87.6760
     };
 
     // Step 3: Create restaurant with base64 image
@@ -297,8 +297,8 @@ async function handleEditRestaurant(e) {
       liveMusic: document.getElementById('editLiveMusic').checked,
       musicSchedule: musicSchedule,
       featured: document.getElementById('editFeatured').checked,
-      lat: document.getElementById('editLat').value || 0,
-      lng: document.getElementById('editLng').value || 0
+      lat: parseFloat(document.getElementById('editLat').value) || 34.7817,
+      lng: parseFloat(document.getElementById('editLng').value) || -87.6760
     };
 
     // Only include new image if provided

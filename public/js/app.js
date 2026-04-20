@@ -47,11 +47,11 @@ async function initializeMap() {
     return;
   }
 
-  // Center of Shoals region (covers Florence, Muscle Shoals, Tuscumbia)
-  const shoalsCenter = [34.7800, -87.7200];
+  // Center of Florence, AL downtown (fallback)
+  const florenceCenter = [34.7817, -87.6760];
 
   // Initialize map
-  const map = L.map('map').setView(shoalsCenter, 12);
+  const map = L.map('map').setView(florenceCenter, 11);
 
   // Add tile layer
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -59,13 +59,64 @@ async function initializeMap() {
     maxZoom: 19
   }).addTo(map);
 
-  // Add restaurant markers with actual coordinates
-  restaurants.forEach((restaurant) => {
+  console.log('[MAP] Processing', restaurants.length, 'restaurants for geocoding...');
+
+  // Process all restaurants and geocode addresses if needed
+  const restaurantsWithCoords = await Promise.all(
+    restaurants.map(async (restaurant) => {
+      let lat = parseFloat(restaurant.lat) || 0;
+      let lng = parseFloat(restaurant.lng) || 0;
+      
+      // If coordinates are invalid (0,0), try to geocode from address
+      if ((lat === 0 && lng === 0) && restaurant.address) {
+        try {
+          console.log(`[MAP] Geocoding address for ${restaurant.name}: "${restaurant.address}"`);
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(restaurant.address)}&limit=1`,
+            {
+              headers: { 'User-Agent': 'Florence-AL-Dining-Guide' }
+            }
+          );
+
+          if (response.ok) {
+            const results = await response.json();
+            if (results && results.length > 0) {
+              lat = parseFloat(results[0].lat);
+              lng = parseFloat(results[0].lon);
+              console.log(`[MAP] ✓ Geocoded ${restaurant.name}: [${lat}, ${lng}]`);
+            }
+          }
+        } catch (error) {
+          console.warn(`[MAP] Geocoding failed for ${restaurant.name}:`, error.message);
+        }
+      }
+
+      // Fallback: If still 0,0 after geocoding attempt, use Florence center with offset
+      if (lat === 0 && lng === 0) {
+        const hash = restaurant._id.toString().charCodeAt(0) || 0;
+        lat = 34.7817 + (hash % 10) * 0.001;
+        lng = -87.6760 + (hash % 10) * 0.001;
+        console.warn(`[MAP] No coordinates available for ${restaurant.name}, using default Florence location`);
+      }
+
+      return { ...restaurant, lat, lng };
+    })
+  );
+
+  // Create marker cluster group to show all markers
+  const markers = [];
+  const latLngs = [];
+
+  // Add markers to map
+  restaurantsWithCoords.forEach((restaurant) => {
     const coordinates = [restaurant.lat, restaurant.lng];
+    latLngs.push(coordinates);
     
-    const musicIcon = restaurant.liveMusic ? 'Live' : 'Dining';
+    const musicIcon = restaurant.liveMusic ? '🎵' : '🍽️';
     
-    const marker = L.marker(coordinates).addTo(map);
+    const marker = L.marker(coordinates, {
+      title: restaurant.name
+    }).addTo(map);
     
     const restaurantId = restaurant._id || restaurant.id;
     const popupContent = `
@@ -73,13 +124,24 @@ async function initializeMap() {
         <h4>${musicIcon} ${restaurant.name}</h4>
         <p><strong>Cuisine:</strong> ${restaurant.cuisine}</p>
         <p><strong>Rating:</strong> ${restaurant.rating}</p>
-        ${restaurant.liveMusic ? `<p><strong style="color: #0984e3;">Live Music</strong></p>` : ''}
+        <p><strong>Address:</strong> ${restaurant.address}</p>
+        ${restaurant.liveMusic ? `<p><strong style="color: #0984e3;">🎵 Live Music</strong></p>` : ''}
         <a href="restaurants.html#restaurant-${restaurantId}" class="popup-link">View Details</a>
       </div>
     `;
     
     marker.bindPopup(popupContent);
+    markers.push(marker);
   });
+
+  // Auto-fit map to show all markers
+  if (latLngs && latLngs.length > 0) {
+    const bounds = L.latLngBounds(latLngs);
+    map.fitBounds(bounds, { padding: [50, 50] });
+    console.log(`[MAP] Map fitted to show all ${latLngs.length} restaurants`);
+  }
+
+  console.log('[MAP] Map initialized with all restaurant markers');
 }
 
 // ==================== RESTAURANT CARDS (HOME PAGE) ====================
