@@ -207,33 +207,26 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ error: 'Username and password are required.' });
     }
 
-    // Check MongoDB users collection only
-    console.log(`[LOGIN] Attempting login for user: ${username}`);
-    let account = await usersCollection().findOne({ username });
-    console.log(`[LOGIN] Account found:`, !!account);
+    // Check MongoDB admins collection only
+    console.log(`[LOGIN] Attempting login for admin: ${username}`);
+    let account = await adminsCollection().findOne({ username });
+    console.log(`[LOGIN] Admin account found:`, !!account);
     
     let role = 'user';
 
     if (!account) {
-      console.log(`[LOGIN] User not found in database`);
+      console.log(`[LOGIN] Admin not found in database`);
       return res.status(401).json({ error: 'Invalid credentials.' });
     }
 
     // Check role and password
-    let passwordMatch = false;
-    
-    if (account.passwordHash) {
-      // If passwordHash exists, use bcrypt comparison
-      console.log(`[LOGIN] Comparing bcrypt password`);
-      passwordMatch = await bcrypt.compare(password, account.passwordHash);
-    } else if (account.password) {
-      // Fallback: plain text password comparison (not recommended for production)
-      console.log(`[LOGIN] Comparing plain text password`);
-      passwordMatch = password === account.password;
-    } else {
-      console.log(`[LOGIN] No password field found in document`);
+    if (!account.passwordHash) {
+      console.log(`[LOGIN] No password hash found for admin: ${username}`);
+      return res.status(401).json({ error: 'Invalid credentials.' });
     }
 
+    console.log(`[LOGIN] Comparing bcrypt password`);
+    const passwordMatch = await bcrypt.compare(password, account.passwordHash);
     console.log(`[LOGIN] Password match:`, passwordMatch);
 
     if (!passwordMatch) {
