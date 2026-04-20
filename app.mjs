@@ -9,6 +9,9 @@ import { Server as SocketIOServer } from 'socket.io';
 import { connectDB } from './src/config/database.mjs';
 import { PORT } from './src/config/constants.mjs';
 import { errorHandler } from './src/middleware/errorHandler.mjs';
+import { initializeSentry } from './src/config/sentry.mjs';
+import requestLogger from './src/middleware/requestLogger.mjs';
+import logger from './src/utils/logger.mjs';
 import { authenticateToken, requireAdmin } from './src/middleware/auth.mjs';
 import { validateRestaurantData, validateAuthData, validateContactMessage } from './src/middleware/validation.mjs';
 import { upload } from './src/utils/multerConfig.mjs';
@@ -33,6 +36,9 @@ const __dirname = dirname(__filename);
 const app = express();
 const server = createServer(app);
 
+// Initialize Sentry error tracking
+initializeSentry(app);
+
 // Socket.IO setup
 const io = new SocketIOServer(server, {
   cors: {
@@ -45,6 +51,7 @@ const io = new SocketIOServer(server, {
 app.use(express.static(join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(requestLogger);
 
 // Public routes
 app.get('/', (req, res) => {
@@ -115,17 +122,18 @@ app.post(
   (req, res) => {
     try {
       if (!req.file) {
+        logger.warn('Image upload failed: no file provided', { path: req.path });
         return res.status(400).json({ error: 'No image file provided' });
       }
 
-      console.log('[UPLOAD] Image uploaded successfully:', req.file.filename);
+      logger.info('Image uploaded successfully', { filename: req.file.filename, size: req.file.size });
       res.json({
         success: true,
         filename: req.file.filename,
         message: 'Image uploaded successfully',
       });
     } catch (error) {
-      console.error('[UPLOAD ERROR]:', error);
+      logger.error('Image upload error', { error: error.message, stack: error.stack });
       res.status(500).json({ error: 'Failed to upload image' });
     }
   }
@@ -138,13 +146,14 @@ app.post('/api/contact', validateContactMessage, sendContactMessage);
 // ============ WEBSOCKET HANDLERS ============
 
 io.on('connection', (socket) => {
-  console.log('[WebSocket] Client connected:', socket.id);
+  logger.info('WebSocket client connected', { socketId: socket.id });
 
   socket.on('send-contact-email', async (data) => {
     const { senderName, senderEmail, subject, message } = data;
 
     try {
       if (!senderName || !senderEmail || !subject || !message) {
+        logger.warn('WebSocket: missing required fields', { socketId: socket.id, senderName, senderEmail });
         socket.emit('email-status', {
           status: 'error',
           message: 'All fields required',
@@ -163,7 +172,7 @@ io.on('connection', (socket) => {
           status: 'received',
         });
       } catch (dbError) {
-        console.warn('[WebSocket] Database error:', dbError.message);
+        logger.warn('WebSocket: database error storing message', { error: dbError.message, socketId: socket.id });
       }
 
       // Send email
@@ -176,12 +185,13 @@ io.on('connection', (socket) => {
       };
 
       await transporter.sendMail(mailOptions);
+      logger.info('Contact email sent successfully', { senderEmail, socketId: socket.id });
       socket.emit('email-status', {
         status: 'success',
         message: 'Email sent successfully!',
       });
     } catch (error) {
-      console.error('[WebSocket] Email error:', error);
+      logger.error('WebSocket email error', { error: error.message, socketId: socket.id, senderEmail });
       socket.emit('email-status', {
         status: 'error',
         message: 'Failed to send email',
@@ -190,7 +200,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.log('[WebSocket] Client disconnected:', socket.id);
+    logger.info('WebSocket client disconnected', { socketId: socket.id });
   });
 });
 
@@ -203,13 +213,13 @@ app.use(errorHandler);
 async function startServer() {
   try {
     await connectDB();
-    console.log('[SERVER] MongoDB connected successfully');
+    logger.info('MongoDB connected successfully');
 
     server.listen(PORT, () => {
-      console.log(`[SERVER] Listening on port ${PORT}`);
+      logger.info(`Server listening on port ${PORT}`, { port: PORT, environment: process.env.NODE_ENV || 'development' });
     });
   } catch (error) {
-    console.error('[SERVER] Failed to start:', error);
+    logger.error('Failed to start server', { error: error.message, stack: error.stack });
     process.exit(1);
   }
 }
