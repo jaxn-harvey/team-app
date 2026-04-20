@@ -4,6 +4,7 @@ import {
   generateToken,
 } from '../services/authService.mjs';
 import { adminsCollection } from '../models/collections.mjs';
+import { ObjectId } from 'mongodb';
 
 export async function login(req, res, next) {
   try {
@@ -12,7 +13,7 @@ export async function login(req, res, next) {
     console.log('[AUTH] Login attempt for:', username);
 
     const admin = await authenticateAdmin(username, password);
-    const token = generateToken(admin._id, admin.username, admin.role);
+    const token = generateToken(admin._id.toString(), admin.username, admin.role);
 
     console.log('[AUTH] Login successful for:', username);
 
@@ -49,13 +50,20 @@ export async function setupAdmin(req, res, next) {
 }
 
 export async function getCurrentAdmin(req, res, next) {
+  console.log('[AUTH] getCurrentAdmin called - userId:', req.user?.userId);
   try {
-    const admin = await adminsCollection().findOne({ _id: req.user.userId });
+    // Convert string userId back to ObjectId for MongoDB query
+    const userId = new ObjectId(req.user.userId);
+    console.log('[AUTH] Searching for admin with ObjectId:', userId);
+    
+    const admin = await adminsCollection().findOne({ _id: userId });
 
     if (!admin) {
+      console.log('[AUTH] Admin not found for userId:', userId);
       return res.status(404).json({ error: 'Admin not found' });
     }
 
+    console.log('[AUTH] Admin found:', admin.username);
     res.json({
       username: admin.username,
       role: admin.role,

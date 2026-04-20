@@ -14,12 +14,12 @@ export function requestLogger(req, res, next) {
     userAgent: req.get('user-agent'),
   });
 
-  // Capture response
+  // Capture response - wrap both send and json
   const originalSend = res.send;
-  res.send = function (data) {
-    const duration = Date.now() - start;
+  const originalJson = res.json;
 
-    // Log response
+  const logResponse = () => {
+    const duration = Date.now() - start;
     const level = res.statusCode >= 400 ? 'warn' : 'info';
     logger[level](`${req.method} ${req.path} - ${res.statusCode}`, {
       method: req.method,
@@ -28,9 +28,16 @@ export function requestLogger(req, res, next) {
       duration: `${duration}ms`,
       ip: req.ip,
     });
+  };
 
-    // Call original send
+  res.send = function (data) {
+    logResponse();
     return originalSend.call(this, data);
+  };
+
+  res.json = function (data) {
+    logResponse();
+    return originalJson.call(this, data);
   };
 
   next();
