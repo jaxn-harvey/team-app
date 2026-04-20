@@ -32,7 +32,7 @@
             <li><a href="index.html" data-i18n="navigation.home">Home</a></li>
             <li><a href="restaurants.html" data-i18n="navigation.restaurants">Restaurants</a></li>
             <li><a href="contact.html" data-i18n="navigation.contact">Contact</a></li>
-            <li><a href="admin-login.html">Admin Login</a></li>
+            <li><a href="admin-login.html">Login</a></li>
             <li id="userGreeting" style="display: none; padding: 10px 15px; color: #8B4513; font-weight: bold;"></li>
             <li id="logoutHeaderBtn" style="display: none;">
               <button style="background: #d32f2f; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.9em;">Logout</button>
@@ -86,12 +86,35 @@
                   <option value="Other">Other</option>
                 </select>
               </div>
-              <div>
-                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Address *</label>
-                <input type="text" id="adminAddress" placeholder="Street address" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
-                <button type="button" id="geoButtonCreate" onclick="autoFillCreateCoordinates()" style="display: block; margin-top: 8px; width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 14px;">📍 Auto-fill Coordinates from Address</button>
-                <small style="color: #666; display: block; margin-top: 5px;">Enter address like: "123 Main St, Florence, AL"</small>
-              </div>
+            </div>
+
+            <div style="background-color: #f9f9f9; padding: 20px; border-radius: 6px; border-left: 4px solid var(--accent-color); margin-bottom: 20px;">
+              <label style="display: block; margin-bottom: 12px; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--primary-color);">Address *</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                <div>
+                  <label style="display: block; margin-bottom: 4px; font-size: 13px; color: #555;">Street Address</label>
+                  <input type="text" id="adminStreet" placeholder="123 Main St" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px;">
+                </div>
+                  <div>
+                    <label style="display: block; margin-bottom: 4px; font-size: 13px; color: #555;">City</label>
+                    <input type="text" id="adminCity" placeholder="City" value="Florence" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px; background-color: #f0f0f0;">
+                  </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                  <div>
+                    <label style="display: block; margin-bottom: 4px; font-size: 13px; color: #555;">State</label>
+                    <input type="text" id="adminState" placeholder="State" value="AL" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px; background-color: #f0f0f0;">
+                  </div>
+                  <div>
+                    <label style="display: block; margin-bottom: 4px; font-size: 13px; color: #555;">ZIP Code</label>
+                    <input type="text" id="adminZip" placeholder="35630" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px;">
+                  </div>
+                </div>
+                <button type="button" id="geoButtonCreate" onclick="autoFillCreateCoordinates()" style="display: block; margin-top: 10px; width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 14px;">📍 Auto-fill Coordinates from Address</button>
+                <small style="color: #666; display: block; margin-top: 6px;">Coordinates will auto-fill when you click the button above</small>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
               <div>
                 <label style="display: block; margin-bottom: 5px; font-weight: bold;">Phone</label>
                 <input type="tel" id="adminPhone" placeholder="Phone number" pattern="[0-9\-\(\)\s]*" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">

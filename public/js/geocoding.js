@@ -51,12 +51,17 @@ async function geocodeAddress(address) {
  * Auto-fill coordinates from address in Create Restaurant form
  */
 async function autoFillCreateCoordinates() {
-  const address = document.getElementById('adminAddress').value;
+  const street = document.getElementById('adminStreet').value.trim();
+  const city = document.getElementById('adminCity').value.trim();
+  const state = document.getElementById('adminState').value.trim();
+  const zip = document.getElementById('adminZip').value.trim();
   
-  if (!address) {
-    alert('Please enter an address first');
+  if (!street || !city || !state || !zip) {
+    alert('Please fill in all address fields (Street, City, State, ZIP)');
     return;
   }
+
+  const address = `${street}, ${city}, ${state} ${zip}`;
 
   try {
     document.getElementById('geoButtonCreate').disabled = true;
@@ -68,13 +73,13 @@ async function autoFillCreateCoordinates() {
     document.getElementById('adminLng').value = coords.lng.toFixed(6);
 
     console.log('[FORM] Coordinates auto-filled from address');
-    alert(`✓ Address found!\nLatitude: ${coords.lat.toFixed(6)}\nLongitude: ${coords.lng.toFixed(6)}`);
+    alert(`Address found!\nLatitude: ${coords.lat.toFixed(6)}\nLongitude: ${coords.lng.toFixed(6)}`);
   } catch (error) {
     alert('Error: ' + error.message);
     console.error('[FORM] Geocoding error:', error);
   } finally {
     document.getElementById('geoButtonCreate').disabled = false;
-    document.getElementById('geoButtonCreate').innerText = '📍 Auto-fill Coordinates from Address';
+    document.getElementById('geoButtonCreate').innerText = 'Auto-fill Coordinates from Address';
   }
 }
 

@@ -112,7 +112,7 @@ async function handleCreateRestaurant(e) {
     const body = {
       name: document.getElementById('adminName').value,
       cuisine: document.getElementById('adminCuisine').value,
-      address: document.getElementById('adminAddress').value,
+      address: `${document.getElementById('adminStreet').value}, ${document.getElementById('adminCity').value}, ${document.getElementById('adminState').value} ${document.getElementById('adminZip').value}`,
       phone: document.getElementById('adminPhone').value,
       hours: hours,
       rating: document.getElementById('adminRating').value || 0,
