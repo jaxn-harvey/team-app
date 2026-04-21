@@ -35,26 +35,26 @@ jobs:
           PM2_NAME: ${{ vars.PM2_NAME }}
           REPO_URL: https://github.com/jaxn-harvey/team-app.git
         run: |
-          ssh -i ~/.ssh/id_rsa -T "$SSH_USER@$SSH_HOST" <<'EOF'
+          ssh -i ~/.ssh/id_rsa -T "$SSH_USER@$SSH_HOST" <<EOF
             set -e
             
-            APP_DIR="${APP_DIR}"
-            PM2_NAME="${PM2_NAME}"
-            REPO_URL="${REPO_URL}"
+            APP_DIR="$APP_DIR"
+            PM2_NAME="$PM2_NAME"
+            REPO_URL="$REPO_URL"
             
-            echo "Setting up deployment..."
-            mkdir -p "$APP_DIR"
+            echo "Setting up deployment to \$APP_DIR..."
+            mkdir -p "\$APP_DIR"
             
             # Check if repo already exists
-            if [ -d "$APP_DIR/.git" ]; then
+            if [ -d "\$APP_DIR/.git" ]; then
               echo "Repository exists, pulling latest changes..."
-              cd "$APP_DIR"
+              cd "\$APP_DIR"
               git fetch origin main
               git reset --hard origin/main
             else
               echo "Cloning repository for first time..."
-              git clone "$REPO_URL" "$APP_DIR"
-              cd "$APP_DIR"
+              git clone "\$REPO_URL" "\$APP_DIR"
+              cd "\$APP_DIR"
               git checkout main
             fi
             
@@ -62,10 +62,10 @@ jobs:
             sudo npm ci --production
             
             echo "Stopping existing PM2 process..."
-            pm2 delete "$PM2_NAME" || true
+            pm2 delete "\$PM2_NAME" || true
             
             echo "Starting PM2 process..."
-            pm2 start -f app.mjs --name "$PM2_NAME"
+            pm2 start -f app.mjs --name "\$PM2_NAME"
             pm2 save
             
             echo "Deployment complete!"
