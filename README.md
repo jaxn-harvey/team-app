@@ -1,4 +1,4 @@
-# Project Proposal
+# Project Overview
 
 ## App Idea
 A website for McFarland Park's visitors center. The platform serves as a potential resource for visitors seeking information about local restaurants using an interactive map and image galleries.
@@ -35,4 +35,7 @@ ssh -i student-key bcumbie@104.197.121.101
 ```
 ## [Shoals Dining Guide](https://shoalsdiningguide.barrycumbie.com)
 
----
+## Dev site on [Render](https://team-app-3m8u.onrender.com/)
+
+<img width="500" height="500" alt="GitIcon" src="https://github.com/user-attachments/assets/9643ff2d-72d0-4fc0-b648-a3bcfa2a4bbc" />
+

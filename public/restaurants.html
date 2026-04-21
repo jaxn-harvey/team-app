@@ -8,6 +8,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next/23.7.6/i18next.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next-http-backend/2.4.2/i18nextHttpBackend.min.js"></script>
+    <script src="js/geocoding.js"></script></head>
 </head>
 
 <body>
@@ -16,8 +19,8 @@
     <div class="container-fluid">
       <div class="header-content">
         <div class="logo">
-          <h1>Florence, AL</h1>
-          <p class="tagline">Live Music & Dining Guide</p>
+          <h1 data-i18n="header.title">Florence, AL</h1>
+          <p class="tagline" data-i18n="header.tagline">Live Music & Dining Guide</p>
         </div>
         <nav class="navbar">
           <button class="hamburger" id="hamburgerMenu">
@@ -26,9 +29,20 @@
             <span></span>
           </button>
           <ul class="nav-menu" id="navMenu">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="#restaurants">Restaurants</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="index.html" data-i18n="navigation.home">Home</a></li>
+            <li><a href="restaurants.html" data-i18n="navigation.restaurants">Restaurants</a></li>
+            <li><a href="contact.html" data-i18n="navigation.contact">Contact</a></li>
+            <li><a href="admin-login.html">Login</a></li>
+            <li id="userGreeting" style="display: none; padding: 10px 15px; color: #8B4513; font-weight: bold;"></li>
+            <li id="logoutHeaderBtn" style="display: none;">
+              <button style="background: #d32f2f; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.9em;">Logout</button>
+            </li>
+            <li class="language-selector">
+              <select id="languageSelect" onchange="changeLanguage(this.value)">
+                <option value="en">English</option>
+                <option value="es">Español</option>
+              </select>
+            </li>
           </ul>
         </nav>
       </div>
@@ -37,31 +51,489 @@
 
   <!-- Hero Section -->
   <section class="hero">
-    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1200&h=400&fit=crop" alt="Restaurant and music venue">
-    <div clasMuscle Shoals Venues & Music Heritage</h2>
-      <p>Experience the birthplace of soul music with dining and live performances
-      <p>Experience Florence's finest dining and live music</p>
+    <img src="/images/restaurants/downtown_florence_3_billingsley_photography.jpg" alt="Florence, Alabama aerial view at sunset">
+    <div class="hero-overlay">
+      <h2 data-i18n="restaurants.hero.title">All Restaurants & Music Venues</h2>
+      <p data-i18n="restaurants.hero.subtitle">Experience Florence's finest dining and live music</p>
     </div>
   </section>
+
+  <!-- ADMIN SECTION (Hidden by default, shown only to logged-in admins) -->
+  <section id="adminSection" style="display: none; background: #f5f5f5; padding: 40px 20px; border-bottom: 2px solid #ccc;">
+    <div class="container">
+      <div style="margin-bottom: 30px;">
+        <h2 style="color: #8B4513; margin-bottom: 20px;">Admin: Add New Restaurant</h2>
+
+        <div style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+          <form id="adminCreateForm">
+            <h3 style="color: #8B4513; margin-top: 0;">Basic Information</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
+              <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Restaurant Name *</label>
+                <input type="text" id="adminName" placeholder="Restaurant name" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+              </div>
+              <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Cuisine Type *</label>
+                <select id="adminCuisine" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                  <option value="">-- Select Cuisine --</option>
+                  <option value="American">American</option>
+                  <option value="Casual American">Casual American</option>
+                  <option value="Soul Food">Soul Food</option>
+                  <option value="Barbecue & Casual">Barbecue & Casual</option>
+                  <option value="Pizza & Italian">Pizza & Italian</option>
+                  <option value="Tapas & Small Plates">Tapas & Small Plates</option>
+                  <option value="American Fine Dining">American Fine Dining</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="background-color: #f9f9f9; padding: 20px; border-radius: 6px; border-left: 4px solid var(--accent-color); margin-bottom: 20px;">
+              <label style="display: block; margin-bottom: 12px; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--primary-color);">Address *</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                <div>
+                  <label style="display: block; margin-bottom: 4px; font-size: 13px; color: #555;">Street Address</label>
+                  <input type="text" id="adminStreet" placeholder="123 Main St" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px;">
+                </div>
+                  <div>
+                    <label style="display: block; margin-bottom: 4px; font-size: 13px; color: #555;">City</label>
+                    <input type="text" id="adminCity" placeholder="City" value="Florence" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px; background-color: #f0f0f0;">
+                  </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                  <div>
+                    <label style="display: block; margin-bottom: 4px; font-size: 13px; color: #555;">State</label>
+                    <input type="text" id="adminState" placeholder="State" value="AL" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px; background-color: #f0f0f0;">
+                  </div>
+                  <div>
+                    <label style="display: block; margin-bottom: 4px; font-size: 13px; color: #555;">ZIP Code</label>
+                    <input type="text" id="adminZip" placeholder="35630" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px;">
+                  </div>
+                </div>
+                <button type="button" id="geoButtonCreate" onclick="autoFillCreateCoordinates()" style="display: block; margin-top: 10px; width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 14px;">📍 Auto-fill Coordinates from Address</button>
+                <small style="color: #666; display: block; margin-top: 6px;">Coordinates will auto-fill when you click the button above</small>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
+              <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Phone</label>
+                <input type="tel" id="adminPhone" placeholder="Phone number" pattern="[0-9\-\(\)\s]*" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+              </div>
+              <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Opening Time</label>
+                <select id="adminOpeningTime" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                  <option value="">-- Select Opening Time --</option>
+                  <option value="12:00 AM">12:00 AM</option>
+                  <option value="1:00 AM">1:00 AM</option>
+                  <option value="2:00 AM">2:00 AM</option>
+                  <option value="3:00 AM">3:00 AM</option>
+                  <option value="4:00 AM">4:00 AM</option>
+                  <option value="5:00 AM">5:00 AM</option>
+                  <option value="6:00 AM">6:00 AM</option>
+                  <option value="7:00 AM">7:00 AM</option>
+                  <option value="8:00 AM">8:00 AM</option>
+                  <option value="9:00 AM">9:00 AM</option>
+                  <option value="10:00 AM">10:00 AM</option>
+                  <option value="11:00 AM">11:00 AM</option>
+                  <option value="12:00 PM">12:00 PM</option>
+                  <option value="1:00 PM">1:00 PM</option>
+                  <option value="2:00 PM">2:00 PM</option>
+                  <option value="3:00 PM">3:00 PM</option>
+                  <option value="4:00 PM">4:00 PM</option>
+                  <option value="5:00 PM">5:00 PM</option>
+                  <option value="6:00 PM">6:00 PM</option>
+                  <option value="7:00 PM">7:00 PM</option>
+                  <option value="8:00 PM">8:00 PM</option>
+                  <option value="9:00 PM">9:00 PM</option>
+                  <option value="10:00 PM">10:00 PM</option>
+                  <option value="11:00 PM">11:00 PM</option>
+                </select>
+              </div>
+              <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Closing Time</label>
+                <select id="adminClosingTime" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                  <option value="">-- Select Closing Time --</option>
+                  <option value="12:00 AM">12:00 AM</option>
+                  <option value="1:00 AM">1:00 AM</option>
+                  <option value="2:00 AM">2:00 AM</option>
+                  <option value="3:00 AM">3:00 AM</option>
+                  <option value="4:00 AM">4:00 AM</option>
+                  <option value="5:00 AM">5:00 AM</option>
+                  <option value="6:00 AM">6:00 AM</option>
+                  <option value="7:00 AM">7:00 AM</option>
+                  <option value="8:00 AM">8:00 AM</option>
+                  <option value="9:00 AM">9:00 AM</option>
+                  <option value="10:00 AM">10:00 AM</option>
+                  <option value="11:00 AM">11:00 AM</option>
+                  <option value="12:00 PM">12:00 PM</option>
+                  <option value="1:00 PM">1:00 PM</option>
+                  <option value="2:00 PM">2:00 PM</option>
+                  <option value="3:00 PM">3:00 PM</option>
+                  <option value="4:00 PM">4:00 PM</option>
+                  <option value="5:00 PM">5:00 PM</option>
+                  <option value="6:00 PM">6:00 PM</option>
+                  <option value="7:00 PM">7:00 PM</option>
+                  <option value="8:00 PM">8:00 PM</option>
+                  <option value="9:00 PM">9:00 PM</option>
+                  <option value="10:00 PM">10:00 PM</option>
+                  <option value="11:00 PM">11:00 PM</option>
+                </select>
+              </div>
+              <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Restaurant Image *</label>
+                <input type="file" id="adminImage" accept="image/*" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                <small style="display: block; margin-top: 5px; color: #666;">Upload a JPG, PNG, or other image (max 5MB)</small>
+              </div>
+            </div>
+
+            <h3 style="color: #8B4513;">Description & Details</h3>
+            <div style="margin-bottom: 15px;">
+              <label style="display: block; margin-bottom: 5px; font-weight: bold;">Description *</label>
+              <textarea id="adminDescription" placeholder="Describe the restaurant" required style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px; min-height: 80px; box-sizing: border-box;"></textarea>
+            </div>
+
+            <h3 style="color: #8B4513;">Ratings & Reviews</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 15px;">
+              <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Rating (0-5)</label>
+                <input type="number" id="adminRating" placeholder="Rating" step="0.1" min="0" max="5" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+              </div>
+              <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Number of Reviews</label>
+                <input type="number" id="adminReviews" placeholder="Reviews" min="0" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+              </div>
+            </div>
+
+            <h3 style="color: #8B4513;">Location (Map Coordinates)</h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 15px;">
+              <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Latitude</label>
+                <input type="number" step="any" id="adminLat" placeholder="34.7817" value="34.7817" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                <small style="color: #666; display: block; margin-top: 4px;">Default: 34.7817 (Downtown Florence, AL)</small>
+              </div>
+              <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Longitude</label>
+                <input type="number" step="any" id="adminLng" placeholder="-87.6760" value="-87.6760" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                <small style="color: #666; display: block; margin-top: 4px;">Default: -87.6760 (Downtown Florence, AL)</small>
+              </div>
+            </div>
+
+            <h3 style="color: #8B4513;">Features</h3>
+            <div style="margin-bottom: 15px;">
+              <label style="margin-right: 30px; display: inline-block;">
+                <input type="checkbox" id="adminLiveMusic"> <strong>Live Music Venue</strong>
+              </label>
+              <label style="display: inline-block;">
+                <input type="checkbox" id="adminFeatured"> <strong>Featured Restaurant</strong>
+              </label>
+            </div>
+
+            <div id="musicScheduleField" style="margin-bottom: 15px; display: none;">
+              <h3 style="color: #8B4513; margin-top: 10px;">Music Schedule</h3>
+              <div style="display: grid; grid-template-columns: auto 1fr; gap: 20px;">
+                <div>
+                  <label style="display: block; margin-bottom: 10px; font-weight: bold;">Days</label>
+                  <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <label style="display: flex; align-items: center; cursor: pointer;">
+                      <input type="checkbox" name="musicDays" value="Monday" style="margin-right: 8px;"> Monday
+                    </label>
+                    <label style="display: flex; align-items: center; cursor: pointer;">
+                      <input type="checkbox" name="musicDays" value="Tuesday" style="margin-right: 8px;"> Tuesday
+                    </label>
+                    <label style="display: flex; align-items: center; cursor: pointer;">
+                      <input type="checkbox" name="musicDays" value="Wednesday" style="margin-right: 8px;"> Wednesday
+                    </label>
+                    <label style="display: flex; align-items: center; cursor: pointer;">
+                      <input type="checkbox" name="musicDays" value="Thursday" style="margin-right: 8px;"> Thursday
+                    </label>
+                    <label style="display: flex; align-items: center; cursor: pointer;">
+                      <input type="checkbox" name="musicDays" value="Friday" style="margin-right: 8px;"> Friday
+                    </label>
+                    <label style="display: flex; align-items: center; cursor: pointer;">
+                      <input type="checkbox" name="musicDays" value="Saturday" style="margin-right: 8px;"> Saturday
+                    </label>
+                    <label style="display: flex; align-items: center; cursor: pointer;">
+                      <input type="checkbox" name="musicDays" value="Sunday" style="margin-right: 8px;"> Sunday
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <label style="display: block; margin-bottom: 10px; font-weight: bold;">Time Range</label>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                      <select id="adminMusicStartTime" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                        <option value="">-- Start Time --</option>
+                        <option value="5:00 PM">5:00 PM</option>
+                        <option value="6:00 PM">6:00 PM</option>
+                        <option value="7:00 PM">7:00 PM</option>
+                        <option value="8:00 PM">8:00 PM</option>
+                        <option value="9:00 PM">9:00 PM</option>
+                        <option value="10:00 PM">10:00 PM</option>
+                      </select>
+                    </div>
+                    <div>
+                      <select id="adminMusicEndTime" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                        <option value="">-- End Time --</option>
+                        <option value="9:00 PM">9:00 PM</option>
+                        <option value="10:00 PM">10:00 PM</option>
+                        <option value="11:00 PM">11:00 PM</option>
+                        <option value="12:00 AM">12:00 AM</option>
+                        <option value="1:00 AM">1:00 AM</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" style="background: #8B4513; color: white; border: none; padding: 12px 24px; border-radius: 4px; cursor: pointer; font-size: 1em; font-weight: bold;">Add Restaurant</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDIT RESTAURANT MODAL -->
+  <div id="editRestaurantModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; overflow-y: auto;">
+    <div style="background: white; margin: 20px auto; padding: 30px; border-radius: 8px; max-width: 600px; max-height: 90vh; overflow-y: auto;">
+      <h2 style="color: #8B4513; margin-top: 0;">Edit Restaurant</h2>
+      <span class="close" onclick="closeEditModal()" style="float: right; font-size: 28px; font-weight: bold; cursor: pointer; color: #999;">&times;</span>
+      
+      <form id="editRestaurantForm">
+        <input type="hidden" id="editRestaurantId">
+        
+        <h3 style="color: #8B4513;">Basic Information</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+          <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Restaurant Name *</label>
+            <input type="text" id="editName" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Cuisine Type *</label>
+            <select id="editCuisine" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+              <option value="">-- Select Cuisine --</option>
+              <option value="American">American</option>
+              <option value="Casual American">Casual American</option>
+              <option value="Soul Food">Soul Food</option>
+              <option value="Barbecue & Casual">Barbecue & Casual</option>
+              <option value="Pizza & Italian">Pizza & Italian</option>
+              <option value="Tapas & Small Plates">Tapas & Small Plates</option>
+              <option value="American Fine Dining">American Fine Dining</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+          <label style="display: block; margin-bottom: 5px; font-weight: bold;">Address *</label>
+          <input type="text" id="editAddress" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+          <button type="button" id="geoButtonEdit" onclick="autoFillEditCoordinates()" style="display: block; margin-top: 8px; width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 14px;">📍 Auto-fill Coordinates from Address</button>
+          <small style="color: #666; display: block; margin-top: 5px;">Enter address like: "123 Main St, Florence, AL"</small>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+          <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Phone</label>
+            <input type="tel" id="editPhone" pattern="[0-9\-\(\)\s]*" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Update Image (optional)</label>
+            <input type="file" id="editImage" accept="image/*" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+          <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Opening Time</label>
+            <select id="editOpeningTime" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+              <option value="">-- Select Opening Time --</option>
+              <option value="12:00 AM">12:00 AM</option>
+              <option value="1:00 AM">1:00 AM</option>
+              <option value="2:00 AM">2:00 AM</option>
+              <option value="3:00 AM">3:00 AM</option>
+              <option value="4:00 AM">4:00 AM</option>
+              <option value="5:00 AM">5:00 AM</option>
+              <option value="6:00 AM">6:00 AM</option>
+              <option value="7:00 AM">7:00 AM</option>
+              <option value="8:00 AM">8:00 AM</option>
+              <option value="9:00 AM">9:00 AM</option>
+              <option value="10:00 AM">10:00 AM</option>
+              <option value="11:00 AM">11:00 AM</option>
+              <option value="12:00 PM">12:00 PM</option>
+              <option value="1:00 PM">1:00 PM</option>
+              <option value="2:00 PM">2:00 PM</option>
+              <option value="3:00 PM">3:00 PM</option>
+              <option value="4:00 PM">4:00 PM</option>
+              <option value="5:00 PM">5:00 PM</option>
+              <option value="6:00 PM">6:00 PM</option>
+              <option value="7:00 PM">7:00 PM</option>
+              <option value="8:00 PM">8:00 PM</option>
+              <option value="9:00 PM">9:00 PM</option>
+              <option value="10:00 PM">10:00 PM</option>
+              <option value="11:00 PM">11:00 PM</option>
+            </select>
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Closing Time</label>
+            <select id="editClosingTime" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+              <option value="">-- Select Closing Time --</option>
+              <option value="12:00 AM">12:00 AM</option>
+              <option value="1:00 AM">1:00 AM</option>
+              <option value="2:00 AM">2:00 AM</option>
+              <option value="3:00 AM">3:00 AM</option>
+              <option value="4:00 AM">4:00 AM</option>
+              <option value="5:00 AM">5:00 AM</option>
+              <option value="6:00 AM">6:00 AM</option>
+              <option value="7:00 AM">7:00 AM</option>
+              <option value="8:00 AM">8:00 AM</option>
+              <option value="9:00 AM">9:00 AM</option>
+              <option value="10:00 AM">10:00 AM</option>
+              <option value="11:00 AM">11:00 AM</option>
+              <option value="12:00 PM">12:00 PM</option>
+              <option value="1:00 PM">1:00 PM</option>
+              <option value="2:00 PM">2:00 PM</option>
+              <option value="3:00 PM">3:00 PM</option>
+              <option value="4:00 PM">4:00 PM</option>
+              <option value="5:00 PM">5:00 PM</option>
+              <option value="6:00 PM">6:00 PM</option>
+              <option value="7:00 PM">7:00 PM</option>
+              <option value="8:00 PM">8:00 PM</option>
+              <option value="9:00 PM">9:00 PM</option>
+              <option value="10:00 PM">10:00 PM</option>
+              <option value="11:00 PM">11:00 PM</option>
+            </select>
+          </div>
+        </div>
+
+        <h3 style="color: #8B4513;">Description & Details</h3>
+        <div style="margin-bottom: 15px;">
+          <label style="display: block; margin-bottom: 5px; font-weight: bold;">Description *</label>
+          <textarea id="editDescription" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; min-height: 80px; box-sizing: border-box;"></textarea>
+        </div>
+
+        <h3 style="color: #8B4513;">Ratings & Reviews</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+          <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Rating (0-5)</label>
+            <input type="number" id="editRating" step="0.1" min="0" max="5" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Number of Reviews</label>
+            <input type="number" id="editReviews" min="0" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+          </div>
+        </div>
+
+        <h3 style="color: #8B4513;">Location (Map Coordinates)</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+          <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Latitude</label>
+            <input type="number" step="any" id="editLat" placeholder="34.7817" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+            <small style="color: #666; display: block; margin-top: 4px;">Default: 34.7817 (Downtown Florence, AL)</small>
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Longitude</label>
+            <input type="number" step="any" id="editLng" placeholder="-87.6760" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+            <small style="color: #666; display: block; margin-top: 4px;">Default: -87.6760 (Downtown Florence, AL)</small>
+          </div>
+        </div>
+
+        <h3 style="color: #8B4513;">Features</h3>
+        <div style="margin-bottom: 15px;">
+          <label style="margin-right: 30px; display: inline-block;">
+            <input type="checkbox" id="editLiveMusic"> <strong>Live Music Venue</strong>
+          </label>
+          <label style="display: inline-block;">
+            <input type="checkbox" id="editFeatured"> <strong>Featured Restaurant</strong>
+          </label>
+        </div>
+
+        <div id="editMusicScheduleField" style="margin-bottom: 15px; display: none;">
+          <h3 style="color: #8B4513; margin-top: 10px;">Music Schedule</h3>
+          <div style="display: grid; grid-template-columns: auto 1fr; gap: 20px;">
+            <div>
+              <label style="display: block; margin-bottom: 10px; font-weight: bold;">Days</label>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                  <input type="checkbox" name="editMusicDays" value="Monday" style="margin-right: 8px;"> Monday
+                </label>
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                  <input type="checkbox" name="editMusicDays" value="Tuesday" style="margin-right: 8px;"> Tuesday
+                </label>
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                  <input type="checkbox" name="editMusicDays" value="Wednesday" style="margin-right: 8px;"> Wednesday
+                </label>
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                  <input type="checkbox" name="editMusicDays" value="Thursday" style="margin-right: 8px;"> Thursday
+                </label>
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                  <input type="checkbox" name="editMusicDays" value="Friday" style="margin-right: 8px;"> Friday
+                </label>
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                  <input type="checkbox" name="editMusicDays" value="Saturday" style="margin-right: 8px;"> Saturday
+                </label>
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                  <input type="checkbox" name="editMusicDays" value="Sunday" style="margin-right: 8px;"> Sunday
+                </label>
+              </div>
+            </div>
+            <div>
+              <label style="display: block; margin-bottom: 10px; font-weight: bold;">Time Range</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div>
+                  <select id="editMusicStartTime" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                    <option value="">-- Start Time --</option>
+                    <option value="5:00 PM">5:00 PM</option>
+                    <option value="6:00 PM">6:00 PM</option>
+                    <option value="7:00 PM">7:00 PM</option>
+                    <option value="8:00 PM">8:00 PM</option>
+                    <option value="9:00 PM">9:00 PM</option>
+                    <option value="10:00 PM">10:00 PM</option>
+                  </select>
+                </div>
+                <div>
+                  <select id="editMusicEndTime" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                    <option value="">-- End Time --</option>
+                    <option value="9:00 PM">9:00 PM</option>
+                    <option value="10:00 PM">10:00 PM</option>
+                    <option value="11:00 PM">11:00 PM</option>
+                    <option value="12:00 AM">12:00 AM</option>
+                    <option value="1:00 AM">1:00 AM</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <button type="submit" style="background: #8B4513; color: white; border: none; padding: 12px 24px; border-radius: 4px; cursor: pointer; font-size: 1em; font-weight: bold; flex: 1;">Save Changes</button>
+          <button type="button" onclick="closeEditModal()" style="background: #999; color: white; border: none; padding: 12px 24px; border-radius: 4px; cursor: pointer; font-size: 1em;">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Main Content -->
   <main class="main-content">
     <div class="container">
       <section class="restaurants-list-section">
-        <h2>All Restaurants & Music Venues</h2>
-        <p style="color: #cccccc; text-align: center; margin-bottom: 30px;">Explore Florence's best dining establishments with live music</p>
+        <h2 data-i18n="restaurants.title">All Restaurants & Music Venues</h2>
+        <p data-i18n="restaurants.subtitle" style="color: #666; text-align: center; margin-bottom: 30px;"></p>
         <div class="filters">
-          <input type="text" id="searchInput" placeholder="Search restaurants..." class="search-box">
+          <input type="text" id="searchInput" data-i18n-placeholder="restaurants.search" placeholder="Search restaurants..." class="search-box">
           <select id="cuisineFilter" class="filter-select">
-            <option value="">All Cuisines</option>
-            <option value="American">American</option>
-            <option value="Casual American">Casual American</option>
-            <option value="Soul Food">Soul Food</option>
-            <option value="Barbecue & Casual">Barbecue</option>
-            <option value="Pizza & Italian">Pizza & Italian</option>
-            <option value="Tapas & Small Plates">Tapas & Small Plates</option>
-            <option value="American Fine Dining">Fine Dining</option>
+            <option value="" data-i18n="restaurants.allCuisines">All Cuisines</option>
+            <option value="American" data-i18n="restaurants.cuisines.american">American</option>
+            <option value="Casual American" data-i18n="restaurants.cuisines.casual">Casual American</option>
+            <option value="Soul Food" data-i18n="restaurants.cuisines.soulFood">Soul Food</option>
+            <option value="Barbecue & Casual" data-i18n="restaurants.cuisines.bbq">Barbecue</option>
+            <option value="Pizza & Italian" data-i18n="restaurants.cuisines.pizza">Pizza & Italian</option>
+            <option value="Tapas & Small Plates" data-i18n="restaurants.cuisines.tapas">Tapas & Small Plates</option>
+            <option value="American Fine Dining" data-i18n="restaurants.cuisines.fineDining">Fine Dining</option>
           </select>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: 15px;">
+            <input type="checkbox" id="liveMusicFilter"> Live Music Only
+          </label>
         </div>
         <div class="restaurants-list" id="restaurantsList">
           <!-- Restaurant items will be populated by JavaScript -->
@@ -75,30 +547,33 @@
     <div class="container">
       <div class="footer-content">
         <div class="footer-section">
-          <h4>About Florence</h4>
-          <p>Florence is Alabama's entertainment and dining destination, home to premier restaurants and live music venues.</p>
+          <h4 data-i18n="footer.about">About Florence</h4>
+          <p data-i18n="footer.aboutText">Florence is Alabama's entertainment and dining destination, home to premier restaurants and live music venues.</p>
         </div>
         <div class="footer-section">
-          <h4>Quick Links</h4>
+          <h4 data-i18n="footer.quickLinks">Quick Links</h4>
           <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="#restaurants">Restaurants</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="index.html" data-i18n="navigation.home">Home</a></li>
+            <li><a href="restaurants.html" data-i18n="navigation.restaurants">Restaurants</a></li>
+            <li><a href="contact.html" data-i18n="navigation.contact">Contact</a></li>
           </ul>
         </div>
         <div class="footer-section">
-          <h4>Contact</h4>
-          <p>Email: info@florencealmusic.com</p>
-          <p>Phone: (256) 760-6600</p>
+          <h4 data-i18n="footer.contact">Contact</h4>
+          <p><span data-i18n="footer.email">Email</span>: info@florencealmusic.com</p>
+          <p><span data-i18n="footer.phone">Phone</span>: (256) 760-6600</p>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2026 Florence, Alabama - Music & Dining. All rights reserved.</p>
+        <p data-i18n="footer.copyright">© 2026 Florence, Alabama - Music & Dining. All rights reserved.</p>
       </div>
     </div>
   </footer>
 
+  <script src="js/i18n.js"></script>
+  <script src="js/geocoding.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/admin-restaurants.js"></script>
 </body>
 
 </html>
