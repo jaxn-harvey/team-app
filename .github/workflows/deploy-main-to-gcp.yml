@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Prepare SSH
         shell: bash
         run: |
@@ -31,16 +34,25 @@ jobs:
           APP_DIR:  ${{ vars.APP_DIR }}
           PM2_NAME: ${{ vars.PM2_NAME }}
         run: |
-          ssh -i ~/.ssh/id_rsa -T "$SSH_USER@$SSH_HOST" <<EOF
+          ssh -i ~/.ssh/id_rsa -T "$SSH_USER@$SSH_HOST" <<'EOF'
             set -e
-
-            cd "$APP_DIR"
-
-            git pull
-            sudo npm ci
-
+            
+            echo "Deploying to $APP_DIR..."
+            cd "$APP_DIR" || { echo "Failed to cd to $APP_DIR"; exit 1; }
+            
+            echo "Pulling latest changes..."
+            git fetch origin main
+            git reset --hard origin/main
+            
+            echo "Installing dependencies..."
+            sudo npm ci --production
+            
+            echo "Restarting PM2 process..."
             pm2 delete "$PM2_NAME" || true
             pm2 start -f app.mjs --name "$PM2_NAME"
-
+            
+            echo "Saving PM2 state..."
             pm2 save
+            
+            echo "Deployment complete!"
           EOF
