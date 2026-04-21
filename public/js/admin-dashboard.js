@@ -38,11 +38,19 @@ function renderRestaurants(restaurants) {
       <p>${r.cuisine}</p>
       <p>${r.address}</p>
 
-      <button class="delete-btn" onclick="deleteRestaurant('${r._id}')">
+      <button class="delete-btn" data-id="${r._id}">
         Delete
       </button>
     </div>
   `).join('');
+
+  // Add event listeners to delete buttons
+  list.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const id = this.dataset.id;
+      deleteRestaurant(id);
+    });
+  });
 }
 
 async function deleteRestaurant(id) {

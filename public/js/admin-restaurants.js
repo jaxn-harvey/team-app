@@ -128,15 +128,20 @@ async function handleCreateRestaurant(e) {
 
     // Step 3: Create restaurant with base64 image
     console.log('[FORM] Creating restaurant...');
+    console.log('[FORM] Token:', token ? 'present' : 'missing');
+    console.log('[FORM] Payload size:', JSON.stringify(body).length, 'bytes');
+    
     const res = await fetch('/api/admin/restaurants', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify(body)
     });
 
+    console.log('[FORM] Response status:', res.status);
+    
     if (res.ok) {
       const adminCreateForm = document.getElementById('adminCreateForm');
       adminCreateForm.reset();
@@ -144,12 +149,14 @@ async function handleCreateRestaurant(e) {
       // Refresh main restaurant list to show new restaurant
       location.reload();
     } else {
-      const error = await res.json();
-      alert('Error: ' + (error.error || 'Failed to create restaurant'));
+      const errorData = await res.json().catch(() => ({ error: 'Unknown error' }));
+      console.error('[FORM] Server error:', errorData);
+      alert('Error: ' + (errorData.error || 'Failed to create restaurant'));
     }
   } catch (error) {
-    console.error('Error creating restaurant:', error);
-    alert('Failed to create restaurant');
+    console.error('[FORM] Network error creating restaurant:', error);
+    console.error('[FORM] Error details:', error.message);
+    alert('Failed to create restaurant: ' + error.message);
   }
 }
 
@@ -176,11 +183,31 @@ async function loadAdminRestaurants() {
           <p style="margin: 0; font-size: 0.9em; color: #666;">${restaurant.cuisine} • ${restaurant.address}</p>
         </div>
         <div style="display: flex; gap: 10px;">
-          <button onclick="openEditRestaurantModal('${restaurant._id}')" style="background: #2196F3; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Edit</button>
-          <button onclick="deleteRestaurant('${restaurant._id}', '${restaurant.name}')" style="background: #d32f2f; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Delete</button>
+          <button class="editBtn" data-id="${restaurant._id}" style="background: #2196F3; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Edit</button>
+          <button class="deleteBtn" data-id="${restaurant._id}" style="background: #d32f2f; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Delete</button>
         </div>
       </div>
     `).join('');
+    
+    // Store restaurants in global variable for easy access
+    window.restaurantList = restaurants;
+    
+    // Add event listeners to buttons
+    adminRestaurantsContainer.querySelectorAll('.editBtn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = btn.dataset.id;
+        openEditRestaurantModal(id);
+      });
+    });
+    
+    adminRestaurantsContainer.querySelectorAll('.deleteBtn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = btn.dataset.id;
+        const restaurant = window.restaurantList.find(r => r._id === id);
+        const name = restaurant ? restaurant.name : 'this restaurant';
+        deleteRestaurant(id, name);
+      });
+    });
   } catch (error) {
     console.error('Error loading restaurants:', error);
   }
@@ -307,26 +334,33 @@ async function handleEditRestaurant(e) {
     }
 
     console.log('[EDIT] Updating restaurant...');
+    console.log('[EDIT] Token:', token ? 'present' : 'missing');
+    console.log('[EDIT] Payload size:', JSON.stringify(body).length, 'bytes');
+    
     const res = await fetch(`/api/admin/restaurants/${restaurantId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify(body)
     });
 
+    console.log('[EDIT] Response status:', res.status);
+    
     if (res.ok) {
       alert('Restaurant updated successfully!');
       closeEditModal();
       location.reload();
     } else {
-      const error = await res.json();
-      alert('Error: ' + (error.error || 'Failed to update restaurant'));
+      const errorData = await res.json().catch(() => ({ error: 'Unknown error' }));
+      console.error('[EDIT] Server error:', errorData);
+      alert('Error: ' + (errorData.error || 'Failed to update restaurant'));
     }
   } catch (error) {
-    console.error('Error updating restaurant:', error);
-    alert('Failed to update restaurant');
+    console.error('[EDIT] Network error updating restaurant:', error);
+    console.error('[EDIT] Error details:', error.message);
+    alert('Failed to update restaurant: ' + error.message);
   }
 }
 
@@ -339,21 +373,28 @@ async function deleteRestaurant(restaurantId, restaurantName) {
   }
 
   try {
+    console.log('[DELETE] Deleting restaurant:', restaurantId);
+    console.log('[DELETE] Token:', token ? 'present' : 'missing');
+    
     const res = await fetch(`/api/admin/restaurants/${restaurantId}`, {
       method: 'DELETE',
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { 'Authorization': `Bearer ${token}` }
     });
 
+    console.log('[DELETE] Response status:', res.status);
+    
     if (res.ok) {
       alert('Restaurant deleted successfully!');
       location.reload();
     } else {
-      const error = await res.json();
-      alert('Error: ' + (error.error || 'Failed to delete restaurant'));
+      const errorData = await res.json().catch(() => ({ error: 'Unknown error' }));
+      console.error('[DELETE] Server error:', errorData);
+      alert('Error: ' + (errorData.error || 'Failed to delete restaurant'));
     }
   } catch (error) {
-    console.error('Error deleting restaurant:', error);
-    alert('Failed to delete restaurant');
+    console.error('[DELETE] Network error deleting restaurant:', error);
+    console.error('[DELETE] Error details:', error.message);
+    alert('Failed to delete restaurant: ' + error.message);
   }
 }
 

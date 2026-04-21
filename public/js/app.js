@@ -232,16 +232,42 @@ async function displayRestaurantsList() {
         <p class="restaurant-description">${restaurant.description}</p>
         <div class="restaurant-rating">${restaurant.rating} (${restaurant.reviews} reviews)</div>
         <div style="display: flex; gap: 10px; margin-top: 10px;">
-          <button class="btn-learn-more" onclick="alert('Contact ${restaurant.name}:\\n${restaurant.phone}\\n\\nHours: ${restaurant.hours}')">
+          <button class="btn-learn-more btn-contact" data-phone="${restaurant.phone}" data-hours="${restaurant.hours}" data-name="${restaurant.name}">
             Contact
           </button>
-          ${token ? '<button class="btn-edit" onclick="openEditRestaurantModal(\'' + restaurantId + '\')" style="background: #2196F3; color: white; border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer;">Edit</button>' : ''}
-          ${token ? '<button class="btn-delete" onclick="deleteRestaurant(\'' + restaurantId + '\', \'' + restaurant.name + '\')" style="background: #d32f2f; color: white; border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer;">Delete</button>' : ''}
+          ${token ? '<button class="btn-edit btn-edit-restaurant" data-id="' + restaurantId + '" style="background: #2196F3; color: white; border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer;">Edit</button>' : ''}
+          ${token ? '<button class="btn-delete btn-delete-restaurant" data-id="' + restaurantId + '" style="background: #d32f2f; color: white; border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer;">Delete</button>' : ''}
         </div>
       </div>
     </div>
     `;
   }).join('');
+
+  // Add event listeners to action buttons
+  document.querySelectorAll('.btn-contact').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const name = this.dataset.name;
+      const phone = this.dataset.phone;
+      const hours = this.dataset.hours;
+      alert(`Contact ${name}:\n${phone}\n\nHours: ${hours}`);
+    });
+  });
+
+  document.querySelectorAll('.btn-edit-restaurant').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const id = this.dataset.id;
+      openEditRestaurantModal(id);
+    });
+  });
+
+  document.querySelectorAll('.btn-delete-restaurant').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const id = this.dataset.id;
+      const card = this.closest('.restaurant-card');
+      const name = card ? card.querySelector('h3').textContent : 'this restaurant';
+      deleteRestaurant(id, name);
+    });
+  });
 
   // Scroll to restaurant if anchor is present in URL
   setTimeout(() => {
