@@ -62,6 +62,7 @@ ssh -i student-key bcumbie@104.197.121.101
 ## Dev site on [Render](https://team-app-3m8u.onrender.com/)
 
 ## Evidence Boxes
+### [Evidence Directory](https://github.com/jaxn-harvey/team-app/wiki/Capability-Boxes-Directory)
 - [Development & Architecture](https://github.com/jaxn-harvey/team-app/issues/33)
 - [DevOps & Infrastructure](https://github.com/jaxn-harvey/team-app/issues/34)
 - [Testing & Reliability](https://github.com/jaxn-harvey/team-app/issues/37)
