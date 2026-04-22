@@ -1,7 +1,6 @@
-# Project Overview
+# Project Brief
 
-## App Idea
-A website for McFarland Park's visitors center. The platform serves as a potential resource for visitors seeking information about local restaurants using an interactive map and image galleries.
+## Quick Overview
 
 ## User Story
 
@@ -34,20 +33,20 @@ A dining guide website built specifically for the **McFarland Visitor Center** i
 
 ## Features
 
-### Restaurant Map UI
+#### Restaurant Map UI
 - **Map:** Interactive Map UI plugin
 - **Restaurant info:** Names, locations, descriptions
-- **Images:** Image galleries
+- **Images:** An optional image for each entry
 
-## Tech Stack
+#### Tech Stack
 
-- **Frontend:** React
-- **Backend:** Node.js + Express 
-- **Database:** MongoDB (flexible schema)
+- **Frontend:** HTML
+- **Backend:** Node.js, Express 
+- **Database:** MongoDB
 - **Deployment:** GCP (Google Cloud Platform)
-- **Experimental/Learning Component:** TypeScript for type safety, or Vue/Svelte as alternative frameworks
-- **Email Capabilities:** Nodemailer or SendGrid for transactional emails and notifications
-- **Other Tools:** Maps API (Google Maps/Mapbox), Weather API, image optimization libraries
+- **Experimental/Learning Component:** i18n Language Support, Leaflet Map Integration
+- **Email Capabilities:** Nodemailer
+- **Other Potential Tools:** Selenium in Python 
 
 ## Members
 - [Alex Nunley](https://github.com/a-nunley)
@@ -61,6 +60,15 @@ ssh -i student-key bcumbie@104.197.121.101
 ## [Shoals Dining Guide](https://shoalsdiningguide.barrycumbie.com)
 
 ## Dev site on [Render](https://team-app-3m8u.onrender.com/)
+
+## Evidence Boxes
+- [Development & Architecture](https://github.com/jaxn-harvey/team-app/issues/33)
+- [DevOps & Infrastructure](https://github.com/jaxn-harvey/team-app/issues/34)
+- [Testing & Reliability](https://github.com/jaxn-harvey/team-app/issues/37)
+- [Client Engagement](https://github.com/jaxn-harvey/team-app/issues/3)
+- [Design](https://github.com/jaxn-harvey/team-app/issues/35)
+- [Experimental](https://github.com/jaxn-harvey/team-app/issues/36)
+
 
 <img width="500" height="500" alt="GitIcon" src="https://github.com/user-attachments/assets/9643ff2d-72d0-4fc0-b648-a3bcfa2a4bbc" />
 
