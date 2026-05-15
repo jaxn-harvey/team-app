@@ -1,4 +1,4 @@
-# NOTE: Credits in GCP have been depleted. To view the app, use the Render instance
+# NOTE: Credits in GCP have been depleted. To view the app, use the (Render instance)[https://team-app-3m8u.onrender.com/]
 
 # Project Brief
 
