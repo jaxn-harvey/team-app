@@ -1,3 +1,5 @@
+# NOTE: Credits in GCP have been depleted. To view the app, use the Render instance
+
 # Project Brief
 
 ## Quick Overview
